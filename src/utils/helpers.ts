@@ -1,13 +1,11 @@
 import { CURRENCY_FORMAT } from './constants';
+import { clsx, type ClassValue } from 'clsx';
 
 /**
- * Combine class names with basic merging
+ * Combine class names with proper merging using clsx
  */
-export const cn = (...inputs: (string | undefined | null | false)[]): string => {
-  return inputs
-    .filter((input): input is string => Boolean(input))
-    .join(' ')
-    .trim();
+export const cn = (...inputs: ClassValue[]): string => {
+  return clsx(inputs);
 };
 
 /**

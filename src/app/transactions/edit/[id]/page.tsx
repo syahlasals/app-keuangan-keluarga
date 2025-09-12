@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { Card, Button, Input, Select, Loading } from '@/components/ui';
+import { Card, Button, Input, Select } from '@/components/ui';
 import { formatNumber, parseFormattedNumber, formatDateForInput } from '@/utils/helpers';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -107,14 +107,6 @@ export default function EditTransactionPage() {
     }
   };
 
-  if (!initialized || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading text="Memuat transaksi..." />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
       {/* Header */}
@@ -152,8 +144,8 @@ export default function EditTransactionPage() {
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pemasukan' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pemasukan'
-                          ? 'border-success-500 bg-success-50 text-success-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'border-success-500 bg-success-50 text-success-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pemasukan
@@ -162,8 +154,8 @@ export default function EditTransactionPage() {
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pengeluaran' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pengeluaran'
-                          ? 'border-danger-500 bg-danger-50 text-danger-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'border-danger-500 bg-danger-50 text-danger-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pengeluaran
@@ -226,10 +218,10 @@ export default function EditTransactionPage() {
             </Link>
             <Button
               type="submit"
-              loading={isSubmitting}
+              disabled={isSubmitting}
               className="flex-1"
             >
-              Simpan Perubahan
+              {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
           </div>
         </form>

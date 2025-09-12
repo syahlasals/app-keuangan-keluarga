@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { isMockAuth } from '@/lib/supabase';
+import { Eye, EyeOff, Mail, Lock, Info } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, loading, user, initialize, initialized } = useAuthStore();
+  const { signIn, user, initialize, initialized } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -16,6 +17,7 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!initialized) {
@@ -23,8 +25,9 @@ export default function LoginPage() {
     }
   }, [initialized, initialize]);
 
+  // Remove initialization loading screen - redirect immediately to dashboard if authenticated
   useEffect(() => {
-    if (user && initialized) {
+    if (initialized && user) {
       router.replace('/dashboard');
     }
   }, [user, initialized, router]);
@@ -38,12 +41,20 @@ export default function LoginPage() {
       return;
     }
 
-    const result = await signIn(formData.email, formData.password);
+    try {
+      setIsSubmitting(true);
+      const result = await signIn(formData.email, formData.password);
 
-    if (result.error) {
-      setError(result.error);
-    } else {
-      router.push('/dashboard');
+      if (result.error) {
+        setError(result.error);
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Terjadi kesalahan saat login. Silakan coba lagi.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -53,14 +64,6 @@ export default function LoginPage() {
       [e.target.name]: e.target.value,
     }));
   };
-
-  if (!initialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 px-4">
@@ -76,6 +79,19 @@ export default function LoginPage() {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {/* Development Notice */}
+          {isMockAuth() && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg">
+              <div className="flex items-start">
+                <Info className="h-5 w-5 mt-0.5 mr-2 flex-shrink-0" />
+                <div className="text-sm">
+                  <p className="font-medium mb-1">Development Mode</p>
+                  <p>Use demo credentials: <strong>demo@example.com</strong> / <strong>password</strong></p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
               {error}
@@ -151,17 +167,10 @@ export default function LoginPage() {
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="btn btn-primary w-full text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Memuat...
-                </div>
-              ) : (
-                'Masuk'
-              )}
+              {isSubmitting ? 'Memuat...' : 'Masuk'}
             </button>
           </div>
 

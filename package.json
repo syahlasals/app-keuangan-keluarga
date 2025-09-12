@@ -21,11 +21,11 @@
   "description": "Family Finance PWA - A simple family budget tracking application",
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
-    "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^24.3.1",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "eslint": "^9.35.0",
     "eslint-config-next": "^15.5.3",
@@ -37,7 +37,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "recharts": "^3.2.0",
-    "tailwindcss": "^4.1.13",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "zustand": "^5.0.8"
   }

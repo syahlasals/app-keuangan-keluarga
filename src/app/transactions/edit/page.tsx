@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
@@ -10,13 +11,13 @@ import { ArrowLeft, Plus, Save } from 'lucide-react';
 import Link from 'next/link';
 import type { TransactionUpdateInput } from '@/types';
 
-export default function EditTransactionPage() {
+function EditTransactionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionId = searchParams.get('id');
 
   const { user, initialized } = useAuthStore();
-  const { transactions, updateTransaction, loading } = useTransactionStore();
+  const { transactions, updateTransaction } = useTransactionStore();
   const { categories, fetchCategories, createCategory } = useCategoryStore();
 
   const [formData, setFormData] = useState({
@@ -122,17 +123,6 @@ export default function EditTransactionPage() {
       router.push('/transactions');
     }
   };
-
-  if (!initialized || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Memuat transaksi...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!currentTransaction) {
     return (
@@ -343,5 +333,17 @@ export default function EditTransactionPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+function EditTransactionPageWrapper() {
+  return <EditTransactionContent />;
+}
+
+export default function EditTransactionPage() {
+  return (
+    <Suspense fallback={null}>
+      <EditTransactionPageWrapper />
+    </Suspense>
   );
 }

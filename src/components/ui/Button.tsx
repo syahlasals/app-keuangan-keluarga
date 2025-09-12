@@ -6,11 +6,10 @@ import { cn } from '@/utils/helpers';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
-  loading?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', loading, children, disabled, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', children, disabled, ...props }, ref) => {
     const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variants = {
@@ -35,13 +34,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           sizes[size],
           className
         )}
-        disabled={disabled || loading}
+        disabled={disabled}
         ref={ref}
         {...props}
       >
-        {loading && (
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-        )}
         {children}
       </button>
     );

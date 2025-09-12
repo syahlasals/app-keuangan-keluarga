@@ -1,9 +1,10 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input, Loading } from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@/components/ui';
 import { Plus, Edit2, Trash2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -11,7 +12,6 @@ export default function CategoriesPage() {
   const { user, initialized } = useAuthStore();
   const {
     categories,
-    loading,
     fetchCategories,
     createCategory,
     updateCategory,
@@ -100,14 +100,6 @@ export default function CategoriesPage() {
     setError('');
   };
 
-  if (!initialized || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading text="Memuat kategori..." />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
       {/* Header */}
@@ -164,10 +156,9 @@ export default function CategoriesPage() {
                   />
                   <Button
                     type="submit"
-                    loading={isSubmitting}
-                    disabled={!newCategoryName.trim()}
+                    disabled={isSubmitting || !newCategoryName.trim()}
                   >
-                    Simpan
+                    {isSubmitting ? 'Menyimpan...' : 'Simpan'}
                   </Button>
                   <Button
                     type="button"
@@ -220,10 +211,9 @@ export default function CategoriesPage() {
                         <Button
                           type="submit"
                           size="sm"
-                          loading={isSubmitting}
-                          disabled={!editCategoryName.trim()}
+                          disabled={isSubmitting || !editCategoryName.trim()}
                         >
-                          Simpan
+                          {isSubmitting ? 'Menyimpan...' : 'Simpan'}
                         </Button>
                         <Button
                           type="button"
@@ -277,7 +267,7 @@ export default function CategoriesPage() {
               </p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Kategori default (Makanan, Transportasi, Pendidikan, Hiburan) akan dibuat otomatis</li>
-                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke "Uncategorized"</li>
+                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke &quot;Uncategorized&quot;</li>
                 <li>Nama kategori tidak boleh sama</li>
               </ul>
             </div>

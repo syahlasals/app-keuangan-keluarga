@@ -8,7 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { signUp, loading, user, initialize, initialized } = useAuthStore();
+  const { signUp, user, initialize, initialized } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!initialized) {
@@ -66,6 +67,7 @@ export default function RegisterPage() {
       return;
     }
 
+    setIsSubmitting(true);
     const result = await signUp(formData.email, formData.password);
 
     if (result.error) {
@@ -77,6 +79,7 @@ export default function RegisterPage() {
       setSuccess('Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi.');
       setFormData({ email: '', password: '', confirmPassword: '' });
     }
+    setIsSubmitting(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,14 +88,6 @@ export default function RegisterPage() {
       [e.target.name]: e.target.value,
     }));
   };
-
-  if (!initialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 px-4">
@@ -213,17 +208,10 @@ export default function RegisterPage() {
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="btn btn-primary w-full text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Memuat...
-                </div>
-              ) : (
-                'Daftar'
-              )}
+              {isSubmitting ? 'Memuat...' : 'Daftar'}
             </button>
           </div>
 

@@ -53,6 +53,8 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
   },
 
+  // Ganti fungsi createCategory yang lama dengan yang ini
+
   createCategory: async (nama: string) => {
     const { user } = useAuthStore.getState();
     if (!user) return { error: 'User not authenticated' };
@@ -68,20 +70,25 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         return { error: 'Kategori sudah ada' };
       }
 
+      // PERBAIKAN:
+      // 1. Masukkan sebagai objek tunggal, bukan array.
+      // 2. Gunakan .select().single() yang kini menjadi valid.
       const { data, error } = await supabase
         .from('categories')
-        .insert([
-          {
-            user_id: user.id,
-            nama: nama.trim(),
-          } as any,
-        ])
+        .insert({
+          user_id: user.id,
+          nama: nama.trim(),
+        })
         .select()
-        .single();
+        .single(); // Sekarang ini aman digunakan
 
       if (error) {
         console.error('Error creating category:', error);
         return handleDatabaseError(error);
+      }
+
+      if (!data) {
+        return { error: 'Gagal membuat kategori, data tidak kembali.' };
       }
 
       // Add to local state

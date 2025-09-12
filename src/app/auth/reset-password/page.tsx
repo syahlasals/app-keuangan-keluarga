@@ -8,16 +8,18 @@ import { Mail, ArrowLeft } from 'lucide-react';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const { resetPassword, loading } = useAuthStore();
+  const { resetPassword } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setIsSubmitting(true);
 
     if (!email) {
       setError('Email wajib diisi');
@@ -38,6 +40,8 @@ export default function ResetPasswordPage() {
       setSuccess('Link reset password telah dikirim ke email Anda. Silakan cek email dan ikuti instruksi yang diberikan.');
       setEmail('');
     }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -91,17 +95,10 @@ export default function ResetPasswordPage() {
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="btn btn-primary w-full text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Mengirim...
-                </div>
-              ) : (
-                'Kirim Link Reset'
-              )}
+              {isSubmitting ? 'Mengirim...' : 'Kirim Link Reset'}
             </button>
           </div>
 

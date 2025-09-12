@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { Card, Button, Input, Select, Loading } from '@/components/ui';
+import { Card, Button, Input, Select } from '@/components/ui';
 import { getCurrentDate, parseFormattedNumber, formatNumber } from '@/utils/helpers';
 import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import type { TransactionCreateInput } from '@/types';
 export default function AddTransactionPage() {
   const router = useRouter();
   const { user, initialized } = useAuthStore();
-  const { createTransaction, loading } = useTransactionStore();
+  const { createTransaction } = useTransactionStore();
   const { categories, fetchCategories } = useCategoryStore();
 
   const [formData, setFormData] = useState({
@@ -87,14 +87,6 @@ export default function AddTransactionPage() {
       router.push('/transactions');
     }
   };
-
-  if (!initialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading text="Memuat..." />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
@@ -247,10 +239,10 @@ export default function AddTransactionPage() {
             </Link >
             <Button
               type="submit"
-              loading={isSubmitting}
+              disabled={isSubmitting}
               className="flex-1"
             >
-              Simpan Transaksi
+              {isSubmitting ? 'Menyimpan...' : 'Simpan Transaksi'}
             </Button >
           </div >
         </form >

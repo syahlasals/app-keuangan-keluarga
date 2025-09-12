@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { Card, CardContent, CardHeader, CardTitle, Loading } from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/utils/helpers';
 import { TrendingUp, TrendingDown, Wallet, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -12,18 +12,16 @@ import MonthlyChart from '@/components/MonthlyChart';
 
 export default function DashboardPage() {
   const { user, initialized } = useAuthStore();
-  const { 
-    transactions, 
-    loading: transactionsLoading, 
+  const {
+    transactions,
     fetchTransactions,
     getMonthlyStats,
     getCurrentBalance,
     getDailyData
   } = useTransactionStore();
-  const { 
-    categories, 
-    loading: categoriesLoading, 
-    fetchCategories 
+  const {
+    categories,
+    fetchCategories
   } = useCategoryStore();
 
   useEffect(() => {
@@ -36,14 +34,6 @@ export default function DashboardPage() {
   const monthlyStats = getMonthlyStats();
   const currentBalance = getCurrentBalance();
   const chartData = getDailyData();
-
-  if (!initialized || transactionsLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading text="Memuat dashboard..." />
-      </div>
-    );
-  }
 
   const recentTransactions = transactions.slice(0, 5);
 
@@ -131,8 +121,8 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg">Transaksi Terbaru</CardTitle>
-            <Link 
-              href="/transactions" 
+            <Link
+              href="/transactions"
               className="text-primary-600 text-sm font-medium hover:text-primary-700"
             >
               Lihat Semua
@@ -155,7 +145,7 @@ export default function DashboardPage() {
                 {recentTransactions.map((transaction) => {
                   const category = categories.find(c => c.id === transaction.kategori_id);
                   const isIncome = transaction.tipe === 'pemasukan';
-                  
+
                   return (
                     <div
                       key={transaction.id}
@@ -166,9 +156,8 @@ export default function DashboardPage() {
                           <p className="font-medium text-gray-900">
                             {category?.nama || 'Uncategorized'}
                           </p>
-                          <div className={`text-lg font-semibold ${
-                            isIncome ? 'text-success-600' : 'text-danger-600'
-                          }`}>
+                          <div className={`text-lg font-semibold ${isIncome ? 'text-success-600' : 'text-danger-600'
+                            }`}>
                             {isIncome ? '+' : '-'}{formatCurrency(transaction.nominal)}
                           </div>
                         </div>

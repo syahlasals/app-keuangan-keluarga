@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
-import { Card, CardHeader, CardTitle, CardContent, Button, Loading } from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button } from '@/components/ui';
 import { formatCurrency } from '@/utils/helpers';
 import { LogOut, User, Wallet, BarChart3, Settings, HelpCircle } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, signOut, loading, initialized } = useAuthStore();
+  const { user, signOut, initialized } = useAuthStore();
   const { transactions, getCurrentBalance } = useTransactionStore();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -22,14 +22,6 @@ export default function ProfilePage() {
       router.replace('/auth/login');
     }
   };
-
-  if (!initialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        < Loading text="Memuat profil..." />
-      </div >
-    );
-  }
 
   const currentBalance = getCurrentBalance();
   const totalTransactions = transactions.length;
@@ -176,7 +168,7 @@ export default function ProfilePage() {
           < Button
             variant="danger"
             onClick={handleSignOut}
-            loading={isSigningOut}
+            disabled={isSigningOut}
             className="w-full flex items-center justify-center"
           >
             <LogOut className="h-4 w-4 mr-2" />
