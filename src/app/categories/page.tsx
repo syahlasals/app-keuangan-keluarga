@@ -293,7 +293,7 @@ export default function CategoriesPage() {
               </p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Kategori default (Makanan, Transportasi, Pendidikan, Hiburan) akan dibuat otomatis</li>
-                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke "Uncategorized"</li>
+                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke &quot;Uncategorized&quot;</li>
                 <li>Nama kategori tidak boleh sama</li>
               </ul>
             </div>
