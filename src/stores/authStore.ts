@@ -127,6 +127,13 @@ export const useAuthStore = create<AuthState>()(
               }
             } else if (event === 'SIGNED_OUT') {
               set({ user: null });
+              // Reset other stores when user signs out
+              if (typeof window !== 'undefined') {
+                // Dynamically import to avoid circular dependency
+                import('./categoryStore').then(({ useCategoryStore }) => {
+                  useCategoryStore.getState().reset();
+                });
+              }
             }
           });
 
@@ -235,9 +242,22 @@ export const useAuthStore = create<AuthState>()(
           }
 
           set({ user: null });
+          // Reset other stores when user signs out
+          if (typeof window !== 'undefined') {
+            // Dynamically import to avoid circular dependency
+            import('./categoryStore').then(({ useCategoryStore }) => {
+              useCategoryStore.getState().reset();
+            });
+          }
         } catch (error) {
           console.error('Error during sign out:', error);
           set({ user: null });
+          // Reset other stores when user signs out
+          if (typeof window !== 'undefined') {
+            import('./categoryStore').then(({ useCategoryStore }) => {
+              useCategoryStore.getState().reset();
+            });
+          }
         }
       },
 

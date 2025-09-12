@@ -50,7 +50,7 @@ export default function RootLayout({
         <link rel="mask-icon" href="/icon-192x192.png" color="#0ea5e9" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
-      <body>
+      <body className="min-h-screen bg-gray-50">
         <ClientLayout>
           {children}
         </ClientLayout>

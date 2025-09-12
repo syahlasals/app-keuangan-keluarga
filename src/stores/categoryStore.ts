@@ -7,6 +7,8 @@ import { DEFAULT_CATEGORIES } from '@/utils/constants';
 interface CategoryState {
   categories: Category[];
   loading: boolean;
+  lastFetchTime: number | null;
+  initialized: boolean;
 
   // Actions
   fetchCategories: () => Promise<void>;
@@ -14,16 +16,24 @@ interface CategoryState {
   updateCategory: (id: string, nama: string) => Promise<{ error?: string }>;
   deleteCategory: (id: string) => Promise<{ error?: string }>;
   initializeDefaultCategories: () => Promise<void>;
+  ensureCategoriesLoaded: (userId: string) => Promise<void>;
+  forceInitializeCategories: () => Promise<void>;
   setLoading: (loading: boolean) => void;
+  reset: () => void;
 }
 
 export const useCategoryStore = create<CategoryState>((set, get) => ({
   categories: [],
   loading: false,
+  lastFetchTime: null,
+  initialized: false,
 
   fetchCategories: async () => {
     const { user } = useAuthStore.getState();
-    if (!user) return;
+    if (!user) {
+      console.warn('No user found when fetching categories');
+      return;
+    }
 
     try {
       set({ loading: true });
@@ -40,10 +50,17 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         return;
       }
 
-      set({ categories: data || [], loading: false });
+      console.log('Categories fetched successfully:', data?.length || 0, 'categories');
+      set({
+        categories: data || [],
+        loading: false,
+        lastFetchTime: Date.now(),
+        initialized: true
+      });
 
       // Initialize default categories if none exist
       if (!data || data.length === 0) {
+        console.log('No categories found, initializing default categories');
         await get().initializeDefaultCategories();
       }
 
@@ -51,6 +68,29 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       console.error('Error fetching categories:', error);
       set({ loading: false });
     }
+  },
+
+  ensureCategoriesLoaded: async (userId: string) => {
+    const state = get();
+    const { user } = useAuthStore.getState();
+
+    // Don't refetch if we already have categories or if we fetched recently
+    const shouldSkip = state.categories.length > 0 ||
+      (state.lastFetchTime && Date.now() - state.lastFetchTime < 30000) || // 30 seconds
+      !user ||
+      user.id !== userId;
+
+    if (shouldSkip) {
+      console.log('Skipping category fetch:', {
+        hasCategories: state.categories.length > 0,
+        recentFetch: state.lastFetchTime && Date.now() - state.lastFetchTime < 30000,
+        userMismatch: !user || user.id !== userId
+      });
+      return;
+    }
+
+    console.log('Ensuring categories are loaded for user:', userId);
+    await get().fetchCategories();
   },
 
   // Ganti fungsi createCategory yang lama dengan yang ini
@@ -179,9 +219,28 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 
   initializeDefaultCategories: async () => {
     const { user } = useAuthStore.getState();
-    if (!user) return;
+    if (!user) {
+      console.warn('No user found when initializing default categories');
+      return;
+    }
 
     try {
+      console.log('Initializing default categories for user:', user.id);
+
+      // First check if categories already exist (race condition protection)
+      const { data: existingCategories } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (existingCategories && existingCategories.length > 0) {
+        console.log('Categories already exist, skipping initialization');
+        // Refetch to get the actual categories
+        await get().fetchCategories();
+        return;
+      }
+
       const categoriesToCreate = DEFAULT_CATEGORIES.map(nama => ({
         user_id: user.id,
         nama,
@@ -197,9 +256,63 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         return;
       }
 
-      set({ categories: data || [] });
+      console.log('Default categories created successfully:', data?.length || 0, 'categories');
+      set({
+        categories: data || [],
+        lastFetchTime: Date.now(),
+        initialized: true
+      });
     } catch (error) {
       console.error('Error initializing default categories:', error);
+    }
+  },
+
+  reset: () => {
+    set({
+      categories: [],
+      loading: false,
+      lastFetchTime: null,
+      initialized: false
+    });
+  },
+
+  forceInitializeCategories: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      console.warn('No user found when force initializing categories');
+      return;
+    }
+
+    try {
+      console.log('Force initializing categories for user:', user.id);
+
+      const categoriesToCreate = DEFAULT_CATEGORIES.map(nama => ({
+        user_id: user.id,
+        nama,
+      }));
+
+      const { data, error } = await supabase
+        .from('categories')
+        .insert(categoriesToCreate as any)
+        .select();
+
+      if (error) {
+        console.error('Error force creating categories:', error);
+        // If insertion fails, maybe categories already exist, so fetch them
+        await get().fetchCategories();
+        return;
+      }
+
+      console.log('Categories force created successfully:', data?.length || 0, 'categories');
+      set({
+        categories: data || [],
+        lastFetchTime: Date.now(),
+        initialized: true
+      });
+    } catch (error) {
+      console.error('Error force initializing categories:', error);
+      // Fallback to fetching existing categories
+      await get().fetchCategories();
     }
   },
 

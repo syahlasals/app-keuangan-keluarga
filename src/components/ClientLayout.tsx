@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import BottomNavigation from './BottomNavigation';
+import InstallPrompt from './InstallPrompt';
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -15,12 +16,14 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     '/auth/login',
     '/auth/register',
     '/auth/reset-password',
+    '/offline',
   ].includes(pathname) || pathname === '/';
 
   return (
     <div id="root" className="min-h-screen">
       {children}
       {!hideNavigation && <BottomNavigation />}
+      <InstallPrompt />
     </div>
   );
 }

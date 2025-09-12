@@ -170,7 +170,7 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="btn btn-primary w-full text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Memuat...' : 'Masuk'}
+              {isSubmitting ? 'Masuk...' : 'Masuk'}
             </button>
           </div>
 

@@ -103,7 +103,7 @@ class SyncService {
             tanggal: data.tanggal,
             catatan: data.catatan,
             status: 'success',
-          } as any]);
+          }]);
 
         if (error) throw error;
 
@@ -125,7 +125,7 @@ class SyncService {
             tanggal: data.tanggal,
             catatan: data.catatan,
             updated_at: new Date().toISOString(),
-          } as any)
+          })
           .eq('id', data.id);
 
         if (error) throw error;
@@ -159,7 +159,7 @@ class SyncService {
             id: data.id,
             user_id: data.user_id,
             nama: data.nama,
-          } as any]);
+          }]);
 
         if (error) throw error;
         break;
@@ -171,7 +171,7 @@ class SyncService {
           .update({
             nama: data.nama,
             updated_at: new Date().toISOString(),
-          } as any)
+          })
           .eq('id', data.id);
 
         if (error) throw error;

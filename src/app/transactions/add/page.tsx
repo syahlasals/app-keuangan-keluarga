@@ -14,7 +14,7 @@ import type { TransactionCreateInput } from '@/types';
 export default function AddTransactionPage() {
   const router = useRouter();
   const { user, initialized } = useAuthStore();
-  const { createTransaction } = useTransactionStore();
+  const { createTransaction, loading } = useTransactionStore();
   const { categories, fetchCategories } = useCategoryStore();
 
   const [formData, setFormData] = useState({
@@ -56,7 +56,7 @@ export default function AddTransactionPage() {
   };
 
   const handleNominalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^\\d]/g, '');
+    const value = e.target.value.replace(/[^\d]/g, '');
     const formattedValue = value ? formatNumber(parseInt(value)) : '';
     setFormData(prev => ({ ...prev, nominal: formattedValue }));
   };
@@ -88,33 +88,35 @@ export default function AddTransactionPage() {
     }
   };
 
+  if (initialized && !user) {
+    return null; // Will redirect to login
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
       {/* Header */}
       <div className="bg-white border-b">
-        < div className="safe-top px-4 py-4">
-          < div className="flex items-center">
-            < Link href="/transactions" className="mr-4">
-              < Button variant="outline" size="sm">
-                < ArrowLeft className="h-4 w-4" />
-              </Button >
-            </Link >
+        <div className="safe-top px-4 py-4">
+          <div className="flex items-center">
+            <Link href="/transactions" className="mr-4">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
             <h1 className="text-xl font-semibold text-gray-900">Tambah Transaksi</h1>
-          </div >
-        </div >
-      </div >
+          </div>
+        </div>
+      </div>
 
       <div className="px-4 py-6">
-        < form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <Card className="mb-6">
-            < div className="p-6">
-              {
-                errors.submit && (
-                  <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg">
-                    {errors.submit}
-                  </div >
-                )
-              }
+            <div className="p-6">
+              {errors.submit && (
+                <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg">
+                  {errors.submit}
+                </div>
+              )}
 
               <div className="space-y-4">
                 {/* Transaction Type */}
@@ -123,47 +125,46 @@ export default function AddTransactionPage() {
                     Tipe Transaksi
                   </label>
                   <div className="grid grid-cols-2 gap-3">
-                    < button
+                    <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, tipe: 'pemasukan' }))
-                      }
+                      onClick={() => setFormData(prev => ({ ...prev, tipe: 'pemasukan' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pemasukan'
-                        ? 'border-success-500 bg-success-50 text-success-700'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          ? 'border-success-500 bg-success-50 text-success-700'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pemasukan
-                    </button >
+                    </button>
                     <button
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pengeluaran' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pengeluaran'
-                        ? 'border-danger-500 bg-danger-50 text-danger-700'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                          ? 'border-danger-500 bg-danger-50 text-danger-700'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pengeluaran
-                    </button >
-                  </div >
-                </div >
+                    </button>
+                  </div>
+                </div>
 
                 {/* Nominal */}
-                < Input
+                <Input
                   label="Nominal"
                   type="text"
                   value={formData.nominal}
                   onChange={handleNominalChange}
                   placeholder="0"
                   error={errors.nominal}
-                  leftIcon={< span className="text-gray-500">Rp</span>}
+                  leftIcon={<span className="text-gray-500">Rp</span>}
                 />
 
                 {/* Category */}
-                < div >
+                <div>
                   <div className="flex items-center justify-between mb-1">
-                    < label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700">
                       Kategori
-                    </label >
+                    </label>
                     <button
                       type="button"
                       onClick={() => setShowAddCategory(!showAddCategory)}
@@ -171,8 +172,8 @@ export default function AddTransactionPage() {
                     >
                       <Plus className="h-4 w-4 inline mr-1" />
                       Tambah Kategori
-                    </button >
-                  </div >
+                    </button>
+                  </div>
 
                   <Select
                     value={formData.kategori_id}
@@ -183,7 +184,7 @@ export default function AddTransactionPage() {
 
                   {showAddCategory && (
                     <div className="mt-2 flex space-x-2">
-                      < Input
+                      <Input
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
                         placeholder="Nama kategori baru"
@@ -199,13 +200,13 @@ export default function AddTransactionPage() {
                         }}
                       >
                         Tambah
-                      </Button >
-                    </div >
+                      </Button>
+                    </div>
                   )}
-                </div >
+                </div>
 
                 {/* Date */}
-                < Input
+                <Input
                   label="Tanggal"
                   type="date"
                   value={formData.tanggal}
@@ -214,10 +215,10 @@ export default function AddTransactionPage() {
                 />
 
                 {/* Notes */}
-                < div >
+                <div>
                   <label htmlFor="catatan" className="block text-sm font-medium text-gray-700 mb-1">
-                    Catatan(Opsional)
-                  </label >
+                    Catatan (Opsional)
+                  </label>
                   <textarea
                     id="catatan"
                     value={formData.catatan}
@@ -226,27 +227,27 @@ export default function AddTransactionPage() {
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
-                </div >
-              </div >
-            </div >
-          </Card >
+                </div>
+              </div>
+            </div>
+          </Card>
 
           <div className="flex space-x-3">
-            < Link href="/transactions" className="flex-1">
-              < Button variant="outline" className="w-full">
+            <Link href="/transactions" className="flex-1">
+              <Button variant="outline" className="w-full">
                 Batal
-              </Button >
-            </Link >
+              </Button>
+            </Link>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              loading={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? 'Menyimpan...' : 'Simpan Transaksi'}
-            </Button >
-          </div >
-        </form >
-      </div >
-    </div >
+              Simpan Transaksi
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

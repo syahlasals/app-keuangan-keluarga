@@ -2,6 +2,7 @@
 import { openDB, IDBPDatabase } from 'idb';
 import type { Transaction, Category } from '@/types';
 import { generateUUID } from './helpers';
+
 const DB_NAME = 'KeuanganKeluarga';
 const DB_VERSION = 1;
 const TRANSACTIONS_STORE = 'transactions';

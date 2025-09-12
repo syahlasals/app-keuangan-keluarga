@@ -21,15 +21,35 @@ export default function DashboardPage() {
   } = useTransactionStore();
   const {
     categories,
-    fetchCategories
+    fetchCategories,
+    ensureCategoriesLoaded
   } = useCategoryStore();
 
   useEffect(() => {
     if (user && initialized) {
+      console.log('Dashboard: fetching data for user', user.id);
       fetchTransactions();
-      fetchCategories();
+      ensureCategoriesLoaded(user.id);
+    } else {
+      console.log('Dashboard: waiting for user/initialization', { user: !!user, initialized });
     }
-  }, [user, initialized, fetchTransactions, fetchCategories]);
+  }, [user, initialized, fetchTransactions, ensureCategoriesLoaded]);
+
+  // Force refresh categories if they don't load
+  useEffect(() => {
+    let retryTimeout: NodeJS.Timeout;
+
+    if (user && initialized && categories.length === 0) {
+      retryTimeout = setTimeout(() => {
+        console.log('Dashboard: forcing category refresh');
+        fetchCategories();
+      }, 3000);
+    }
+
+    return () => {
+      if (retryTimeout) clearTimeout(retryTimeout);
+    };
+  }, [user, initialized, categories.length, fetchCategories]);
 
   const monthlyStats = getMonthlyStats();
   const currentBalance = getCurrentBalance();

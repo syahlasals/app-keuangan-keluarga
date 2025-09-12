@@ -74,7 +74,7 @@ export default function EditTransactionPage() {
   };
 
   const handleNominalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^d]/g, '');
+    const value = e.target.value.replace(/[^\d]/g, '');
     const formattedValue = value ? formatNumber(parseInt(value)) : '';
     setFormData(prev => ({ ...prev, nominal: formattedValue }));
   };

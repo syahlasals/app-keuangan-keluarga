@@ -15,7 +15,10 @@ export default function CategoriesPage() {
     fetchCategories,
     createCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    ensureCategoriesLoaded,
+    forceInitializeCategories,
+    reset
   } = useCategoryStore();
 
   const [showAddForm, setShowAddForm] = useState(false);
@@ -27,9 +30,32 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     if (user && initialized) {
-      fetchCategories();
+      console.log('Categories page: ensuring categories loaded for user', user.id);
+      ensureCategoriesLoaded(user.id);
+    } else {
+      console.log('Categories page: waiting for user/initialization', { user: !!user, initialized });
+      // Reset categories when user changes
+      reset();
     }
-  }, [user, initialized, fetchCategories]);
+  }, [user, initialized, ensureCategoriesLoaded, reset]);
+
+  // Force refresh if categories are still empty after initialization
+  useEffect(() => {
+    let retryTimeout: NodeJS.Timeout;
+
+    if (user && initialized && categories.length === 0) {
+      retryTimeout = setTimeout(() => {
+        console.log('Categories page: forcing category refresh after delay');
+        fetchCategories();
+      }, 3000);
+    }
+
+    return () => {
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+      }
+    };
+  }, [user, initialized, categories.length, fetchCategories]);
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
