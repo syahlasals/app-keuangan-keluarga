@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Production Deployment Setup Script
+# Run this after deploying to Vercel
+
+echo "🚀 Production Authentication Setup Guide"
+echo "========================================"
+echo ""
+echo "1. Get your Vercel production URL:"
+echo "   - Check your Vercel dashboard"
+echo "   - URL format: https://app-keuangan-keluarga-[random].vercel.app"
+echo ""
+echo "2. Update Supabase Authentication Settings:"
+echo "   - Go to: https://supabase.com/dashboard/project/nfxbdqjnjwpwhefiqlwo/auth/settings"
+echo "   - Site URL: Add your Vercel production URL"
+echo "   - Redirect URLs: Add these (keep localhost for dev):"
+echo "     * https://YOUR-VERCEL-URL.vercel.app/auth/login"
+echo "     * https://YOUR-VERCEL-URL.vercel.app/auth/reset-password"
+echo "     * https://YOUR-VERCEL-URL.vercel.app/"
+echo ""
+echo "3. Verify Vercel Environment Variables:"
+echo "   - NEXT_PUBLIC_SUPABASE_URL: https://nfxbdqjnjwpwhefiqlwo.supabase.co"
+echo "   - NEXT_PUBLIC_SUPABASE_ANON_KEY: [your-anon-key]"
+echo "   - NEXT_PUBLIC_DISABLE_AUTH: false"
+echo ""
+echo "4. Test authentication after setup:"
+echo "   - Visit your production URL"
+echo "   - Try registering a new user"
+echo "   - Confirm email and login"
+echo ""
+echo "✅ After completing these steps, authentication should work in production!"
