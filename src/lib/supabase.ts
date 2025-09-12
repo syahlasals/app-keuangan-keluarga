@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true';
 
 // Check if we're using placeholder values
 const isPlaceholderConfig =
-  supabaseUrl.includes('placeholder') ||
-  supabaseKey.includes('placeholder') ||
+  (supabaseUrl && supabaseUrl.includes('placeholder')) ||
+  (supabaseKey && supabaseKey.includes('placeholder')) ||
   !supabaseUrl ||
   !supabaseKey;
 
@@ -158,8 +158,8 @@ export const isMockAuth = () => {
   const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true';
 
   return disableAuth ||
-    supabaseUrl.includes('placeholder') ||
-    supabaseKey.includes('placeholder') ||
+    (supabaseUrl && supabaseUrl.includes('placeholder')) ||
+    (supabaseKey && supabaseKey.includes('placeholder')) ||
     !supabaseUrl ||
     !supabaseKey;
 };
