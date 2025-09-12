@@ -40,11 +40,28 @@ export const useAuthStore = create<AuthState>()(
             return;
           }
 
-          // Get initial session
-          const { data: { session }, error } = await supabase.auth.getSession();
+          // Get initial session with error handling for refresh token
+          let session = null;
+          try {
+            const { data: { session: currentSession }, error } = await supabase.auth.getSession();
 
-          if (error) {
-            console.error('Error getting session:', error);
+            if (error) {
+              console.warn('Session error (possibly expired refresh token):', error);
+              // Clear any stored session and continue as unauthenticated
+              await supabase.auth.signOut();
+              set({ user: null, initialized: true });
+              return;
+            }
+
+            session = currentSession;
+          } catch (sessionError) {
+            console.warn('Failed to get session:', sessionError);
+            // Clear stored auth data and continue as unauthenticated
+            try {
+              await supabase.auth.signOut();
+            } catch (signOutError) {
+              console.warn('Failed to sign out during session error:', signOutError);
+            }
             set({ user: null, initialized: true });
             return;
           }

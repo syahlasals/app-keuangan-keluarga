@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
@@ -9,6 +8,7 @@ import { Button, Card, Input } from '@/components/ui';
 import TransactionStatus from '@/components/TransactionStatus';
 import SyncStatus from '@/components/SyncStatus';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import { useDataRefresh } from '@/hooks/useDataRefresh';
 import {
   Plus,
   Search,
@@ -25,7 +25,6 @@ import { formatCurrency, formatDate } from '@/utils/helpers';
 import type { FilterOptions } from '@/types';
 
 export default function TransactionsPage() {
-  const router = useRouter();
   const { user, initialized } = useAuthStore();
   const {
     transactions,
@@ -40,6 +39,9 @@ export default function TransactionsPage() {
   const { categories, fetchCategories } = useCategoryStore();
   const { isOnline } = useOnlineStatus();
 
+  // Auto-refresh data when page becomes visible
+  useDataRefresh();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -52,16 +54,11 @@ export default function TransactionsPage() {
   });
 
   useEffect(() => {
-    if (initialized && !user) {
-      router.push('/auth/login');
-      return;
-    }
-
     if (user && initialized) {
       fetchCategories();
       fetchTransactions(true);
     }
-  }, [user, initialized, router, fetchCategories, fetchTransactions]);
+  }, [user, initialized, fetchCategories, fetchTransactions]);
 
   // Handle scroll for "scroll to top" button
   useEffect(() => {
@@ -137,10 +134,6 @@ export default function TransactionsPage() {
   const getActiveFiltersCount = () => {
     return Object.values(filters).filter(value => value && value !== '').length;
   };
-
-  if (initialized && !user) {
-    return null; // Will redirect to login
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">

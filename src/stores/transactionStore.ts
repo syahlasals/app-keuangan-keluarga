@@ -42,8 +42,6 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       const state = get();
       const page = reset ? 0 : state.currentPage;
 
-      set({ loading: true });
-
       let query = supabase
         .from('transactions')
         .select(`
@@ -78,7 +76,6 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       if (error) {
         console.error('Error fetching transactions:', error);
-        set({ loading: false });
         return;
       }
 
@@ -87,14 +84,12 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       set({
         transactions: reset ? newTransactions : [...state.transactions, ...newTransactions],
-        loading: false,
         hasMore,
         currentPage: page + 1,
       });
 
     } catch (error) {
       console.error('Error fetching transactions:', error);
-      set({ loading: false });
     }
   },
 
@@ -128,6 +123,9 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       set({
         transactions: [data, ...state.transactions],
       });
+
+      // Background refresh to ensure synchronization
+      setTimeout(() => get().fetchTransactions(true), 100);
 
       return {};
     } catch (error) {
@@ -163,6 +161,9 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       set({ transactions: updatedTransactions });
 
+      // Background refresh to ensure synchronization
+      setTimeout(() => get().fetchTransactions(true), 100);
+
       return {};
     } catch (error) {
       console.error('Error updating transaction:', error);
@@ -189,6 +190,9 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       );
 
       set({ transactions: filteredTransactions });
+
+      // Background refresh to ensure synchronization
+      setTimeout(() => get().fetchTransactions(true), 100);
 
       return {};
     } catch (error) {

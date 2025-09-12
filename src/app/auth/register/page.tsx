@@ -8,7 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { signUp, user, initialize, initialized } = useAuthStore();
+  const { signUp, user, initialized } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -21,17 +21,8 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!initialized) {
-      initialize();
-    }
-  }, [initialized, initialize]);
-
-  useEffect(() => {
-    if (user && initialized) {
-      router.replace('/dashboard');
-    }
-  }, [user, initialized, router]);
+  // AuthProvider handles initialization and redirect
+  // No additional useEffect needed
 
   const validateForm = () => {
     if (!formData.email || !formData.password || !formData.confirmPassword) {

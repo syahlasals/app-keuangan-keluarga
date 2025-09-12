@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
+import { useDataRefresh } from '@/hooks/useDataRefresh';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/utils/helpers';
 import { TrendingUp, TrendingDown, Wallet, Plus } from 'lucide-react';
@@ -25,13 +26,14 @@ export default function DashboardPage() {
     ensureCategoriesLoaded
   } = useCategoryStore();
 
+  // Auto-refresh data when page becomes visible
+  useDataRefresh();
+
   useEffect(() => {
     if (user && initialized) {
       console.log('Dashboard: fetching data for user', user.id);
       fetchTransactions();
       ensureCategoriesLoaded(user.id);
-    } else {
-      console.log('Dashboard: waiting for user/initialization', { user: !!user, initialized });
     }
   }, [user, initialized, fetchTransactions, ensureCategoriesLoaded]);
 

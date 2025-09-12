@@ -36,8 +36,6 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
 
     try {
-      set({ loading: true });
-
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -46,14 +44,12 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 
       if (error) {
         console.error('Error fetching categories:', error);
-        set({ loading: false });
         return;
       }
 
       console.log('Categories fetched successfully:', data?.length || 0, 'categories');
       set({
         categories: data || [],
-        loading: false,
         lastFetchTime: Date.now(),
         initialized: true
       });
@@ -66,7 +62,6 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 
     } catch (error) {
       console.error('Error fetching categories:', error);
-      set({ loading: false });
     }
   },
 
@@ -136,6 +131,9 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         categories: [...state.categories, data].sort((a, b) => a.nama.localeCompare(b.nama)),
       });
 
+      // Background refresh to ensure synchronization
+      setTimeout(() => get().fetchCategories(), 100);
+
       return { data };
     } catch (error) {
       console.error('Error creating category:', error);
@@ -173,6 +171,9 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         .sort((a, b) => a.nama.localeCompare(b.nama));
 
       set({ categories: updatedCategories });
+
+      // Background refresh to ensure synchronization
+      setTimeout(() => get().fetchCategories(), 100);
 
       return {};
     } catch (error) {

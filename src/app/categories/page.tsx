@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCategoryStore } from '@/stores/categoryStore';
+import { useDataRefresh } from '@/hooks/useDataRefresh';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@/components/ui';
 import { Plus, Edit2, Trash2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -21,6 +22,9 @@ export default function CategoriesPage() {
     reset
   } = useCategoryStore();
 
+  // Auto-refresh data when page becomes visible
+  useDataRefresh();
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<{ id: string; nama: string } | null>(null);
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -32,12 +36,8 @@ export default function CategoriesPage() {
     if (user && initialized) {
       console.log('Categories page: ensuring categories loaded for user', user.id);
       ensureCategoriesLoaded(user.id);
-    } else {
-      console.log('Categories page: waiting for user/initialization', { user: !!user, initialized });
-      // Reset categories when user changes
-      reset();
     }
-  }, [user, initialized, ensureCategoriesLoaded, reset]);
+  }, [user, initialized, ensureCategoriesLoaded]);
 
   // Force refresh if categories are still empty after initialization
   useEffect(() => {

@@ -9,7 +9,7 @@ import { Eye, EyeOff, Mail, Lock, Info } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, user, initialize, initialized } = useAuthStore();
+  const { signIn, user, initialized } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -19,18 +19,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!initialized) {
-      initialize();
-    }
-  }, [initialized, initialize]);
-
-  // Remove initialization loading screen - redirect immediately to dashboard if authenticated
-  useEffect(() => {
-    if (initialized && user) {
-      router.replace('/dashboard');
-    }
-  }, [user, initialized, router]);
+  // AuthProvider handles initialization and redirect
+  // No additional useEffect needed
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

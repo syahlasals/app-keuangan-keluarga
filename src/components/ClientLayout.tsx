@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import AuthProvider from './AuthProvider';
 import BottomNavigation from './BottomNavigation';
 import InstallPrompt from './InstallPrompt';
 
@@ -20,10 +21,12 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   ].includes(pathname) || pathname === '/';
 
   return (
-    <div id="root" className="min-h-screen">
-      {children}
-      {!hideNavigation && <BottomNavigation />}
-      <InstallPrompt />
-    </div>
+    <AuthProvider>
+      <div id="root" className="min-h-screen">
+        {children}
+        {!hideNavigation && <BottomNavigation />}
+        <InstallPrompt />
+      </div>
+    </AuthProvider>
   );
 }

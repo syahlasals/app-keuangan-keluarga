@@ -21,8 +21,8 @@ export default function InstallPrompt() {
   useEffect(() => {
     // Check if app is already installed
     const checkInstalled = () => {
-      // For WebKit browsers
-      if (window.navigator.standalone) {
+      // For WebKit browsers (iOS Safari)
+      if ((window.navigator as any).standalone) {
         setIsInstalled(true);
         return;
       }
