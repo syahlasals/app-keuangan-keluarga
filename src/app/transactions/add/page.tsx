@@ -165,14 +165,14 @@ export default function AddTransactionPage() {
                     <label className="block text-sm font-medium text-gray-700">
                       Kategori
                     </label>
-                    <button
+                    {/* <button
                       type="button"
                       onClick={() => setShowAddCategory(!showAddCategory)}
                       className="text-primary-600 text-sm hover:text-primary-700"
                     >
                       <Plus className="h-4 w-4 inline mr-1" />
                       Tambah Kategori
-                    </button>
+                    </button> */}
                   </div>
 
                   <Select
