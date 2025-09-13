@@ -11,117 +11,22 @@ const isPlaceholderConfig =
   !supabaseUrl ||
   !supabaseKey;
 
+// Only show warning for explicit placeholder usage, not for missing env vars
 if (disableAuth) {
   console.warn('🚫 Authentication is disabled for UI testing.');
-} else if (isPlaceholderConfig) {
+} else if ((supabaseUrl && supabaseUrl.includes('placeholder')) ||
+  (supabaseKey && supabaseKey.includes('placeholder'))) {
   console.warn('⚠️  Using placeholder Supabase configuration. Authentication will be mocked for development.');
 }
 
-// Create a mock client for development when using placeholders
-const createMockSupabaseClient = () => {
-  return {
-    auth: {
-      getSession: async () => {
-        try {
-          return {
-            data: { session: null },
-            error: null
-          };
-        } catch (error) {
-          console.warn('Mock getSession error:', error);
-          return {
-            data: { session: null },
-            error: null
-          };
-        }
-      },
-      signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
-        // Mock successful login for demo purposes
-        if (email === 'demo@example.com' && password === 'password') {
-          return {
-            data: {
-              user: {
-                id: 'mock-user-id',
-                email: email,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              },
-              session: {
-                access_token: 'mock-token',
-                refresh_token: 'mock-refresh-token',
-                user: {
-                  id: 'mock-user-id',
-                  email: email
-                }
-              }
-            },
-            error: null
-          };
-        }
-
-        return {
-          data: { user: null, session: null },
-          error: { message: 'Invalid email or password' }
-        };
-      },
-      signUp: async ({ email, password }: { email: string; password: string }) => {
-        return {
-          data: {
-            user: {
-              id: 'mock-user-id',
-              email: email,
-              created_at: new Date().toISOString()
-            },
-            session: null
-          },
-          error: null
-        };
-      },
-      signOut: async () => ({
-        error: null
-      }),
-      resetPasswordForEmail: async () => ({
-        error: null
-      }),
-      onAuthStateChange: () => {
-        return {
-          data: {
-            subscription: {
-              unsubscribe: () => { }
-            }
-          }
-        };
-      }
-    },
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          single: async () => ({
-            data: {
-              id: 'mock-user-id',
-              email: 'demo@example.com',
-              nama: 'Demo User',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            },
-            error: null
-          })
-        })
-      })
-    })
-  };
-};
-
-// Use mock client for development or real client for production
-export const supabase = (isPlaceholderConfig || disableAuth)
-  ? createMockSupabaseClient() as any
-  : createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-    },
-  });
+// Use real Supabase client - removed mock client for development
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+});
 
 // Helper function to handle auth errors
 export const handleAuthError = (error: any) => {
