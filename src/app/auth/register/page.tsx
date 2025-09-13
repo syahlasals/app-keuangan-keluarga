@@ -59,9 +59,11 @@ export default function RegisterPage() {
     }
 
     setIsSubmitting(true);
+    console.log('Attempting to register user:', formData.email);
     const result = await signUp(formData.email, formData.password);
 
     if (result.error) {
+      console.error('Registration error:', result.error);
       setError(result.error);
     } else if (result.success && result.message) {
       setSuccess(result.message);

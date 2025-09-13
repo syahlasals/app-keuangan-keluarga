@@ -26,6 +26,24 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true,
     detectSessionInUrl: true,
   },
+  global: {
+    // Add better error handling
+    fetch: async (url, options = {}) => {
+      try {
+        const response = await fetch(url, options);
+
+        // Log response for debugging
+        if (!response.ok) {
+          console.warn(`Supabase API request failed: ${response.status} ${response.statusText} - ${url}`);
+        }
+
+        return response;
+      } catch (error) {
+        console.error('Network error in Supabase client:', error);
+        throw error;
+      }
+    }
+  }
 });
 
 // Helper function to handle auth errors
@@ -48,6 +66,20 @@ export const handleAuthError = (error: any) => {
   if (error?.message?.includes('fetch')) {
     return {
       error: 'Unable to connect to authentication server. Please check your internet connection.',
+    };
+  }
+
+  // Handle database errors specifically
+  if (error?.message?.includes('Database error')) {
+    return {
+      error: 'There was a database error while processing your request. Please try again later.',
+    };
+  }
+
+  // Handle constraint violations
+  if (error?.message?.includes('duplicate key value violates unique constraint')) {
+    return {
+      error: 'An account with this email already exists. Please try logging in instead.',
     };
   }
 

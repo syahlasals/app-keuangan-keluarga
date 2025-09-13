@@ -220,6 +220,7 @@ export const useAuthStore = create<AuthState>()(
 
       signUp: async (email: string, password: string) => {
         try {
+          console.log('Attempting to sign up user:', email);
 
           const { data, error } = await supabase.auth.signUp({
             email,
@@ -233,11 +234,15 @@ export const useAuthStore = create<AuthState>()(
           });
 
           if (error) {
+            console.error('Supabase auth signUp error:', error);
             return handleAuthError(error);
           }
 
+          console.log('Supabase auth signUp successful:', data);
+
           // Note: User record will be created via database trigger after email confirmation
           // or via RLS policy, so we don't create it manually here
+          // If the trigger fails, we'll handle it gracefully
 
           // Return success message with instruction to check email
           return {
@@ -245,6 +250,7 @@ export const useAuthStore = create<AuthState>()(
             message: 'Please check your email and click the confirmation link to complete registration.',
           };
         } catch (error) {
+          console.error('Unexpected error during signUp:', error);
           return handleAuthError(error);
         }
       },
