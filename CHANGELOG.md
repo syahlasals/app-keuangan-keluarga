@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial release of Family Finance PWA application
-- User authentication (registration, login, password reset)
+- User authentication (registration, login)
 - Transaction management (income/expense tracking)
 - Category management with default categories (Makanan, Transportasi, Pendidikan, Hiburan)
 - Dashboard with balance summary and monthly charts
