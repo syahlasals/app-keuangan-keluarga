@@ -75,7 +75,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="gradient-header">
+      <div className="gradient-header px-4 py-4">
         <div className="safe-top px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
