@@ -125,9 +125,15 @@ export default function TransactionsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const getCategoryName = (categoryId: string | null) => {
-    if (!categoryId) return 'Uncategorized';
-    const category = categories.find(c => c.id === categoryId);
+  const getCategoryName = (transaction: any) => {
+    // For income transactions, show "Pemasukan" instead of "Uncategorized"
+    if (transaction.tipe === 'pemasukan') {
+      return 'Pemasukan';
+    }
+
+    // For expenses, show category name if available, otherwise "Uncategorized"
+    if (!transaction.kategori_id) return 'Uncategorized';
+    const category = categories.find(c => c.id === transaction.kategori_id);
     return category?.nama || 'Unknown';
   };
 
@@ -312,7 +318,7 @@ export default function TransactionsPage() {
                     <div className="flex items-center text-sm text-gray-500 space-x-4">
                       <div className="flex items-center">
                         <Tag className="h-4 w-4 mr-1" />
-                        {getCategoryName(transaction.kategori_id)}
+                        {getCategoryName(transaction)}
                       </div>
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />

@@ -33,10 +33,10 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 
   * Nominal: Angka (integer), dalam format Rupiah.
   * Tanggal: (backdate diperbolehkan, tanpa jam).
-  * Kategori (default: Makanan, Transportasi, Pendidikan, Hiburan; bisa tambah/edit/hapus; dipilih dari dropdown).
+  * Kategori: Hanya untuk pengeluaran. Untuk pemasukan tidak perlu kategori.
   * Catatan: Teks opsional untuk detail tambahan.
   * Riwayat Transaksi: Default ditampilkan berurutan dari yang terbaru (descending). Dilengkapi infinite scroll dan tombol "Scroll to Top".
-  * Satu transaksi = satu kategori.
+  * Satu transaksi = satu kategori (jika diperlukan).
 
 * Pencarian & Filter:
   * Search: Search transaksi berdasarkan kata kunci (catatan/kategori).
@@ -49,9 +49,10 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 
 ### 3.4 Kategori
 
-* Default kategori: Makanan, Transportasi, Pendidikan, Hiburan. Input berupa dropdown + opsi “Tambah kategori baru”.
+* Default kategori: Makanan, Transportasi, Pendidikan, Hiburan. Input berupa dropdown + opsi "Tambah kategori baru".
 * Manajemen Kategori: Pengguna dapat menambah, mengubah, atau menghapus kategori.
 * Penghapusan Kategori: Jika sebuah kategori dihapus, semua transaksi yang terkait akan dipindahkan ke kategori "Uncategorized".
+* Kategori hanya digunakan untuk transaksi pengeluaran, tidak untuk pemasukan.
 
 ### 3.5 Sinkronisasi & Status
 
@@ -135,7 +136,7 @@ string
 
 * `id` (UUID, PK)
 * `user_id` (FK → users.id)
-* `kategori_id` (FK → categories.id, nullable → “Uncategorized”)
+* `kategori_id` (FK → categories.id, nullable → "Uncategorized")
 * `nominal` (integer)
 * `tipe` (enum: pemasukan/pengeluaran)
 * `tanggal` (date)
@@ -149,7 +150,7 @@ string
 1. **Registrasi** → input email & password → redirect ke login.
 2. **Login** → masuk dashboard.
 3. **Dashboard** → Pengguna melihat ringkasan saldo, pemasukan/pengeluaran bulan ini, dan grafik harian.
-4. **Tambah transaksi** → pilih tipe (pemasukan/pengeluaran), nominal, kategori, tanggal, catatan → simpan → tampil di history.
+4. **Tambah transaksi** → pilih tipe (pemasukan/pengeluaran), nominal, kategori (hanya untuk pengeluaran), tanggal, catatan → simpan → tampil di history.
 5. **History transaksi** → default descending, infinite scroll, filter kategori/rentang waktu, search.
 6. **Logout** dari menu profil.
 
