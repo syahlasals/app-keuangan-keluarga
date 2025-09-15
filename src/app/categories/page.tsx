@@ -102,7 +102,7 @@ export default function CategoriesPage() {
   };
 
   const handleDeleteCategory = async (id: string, nama: string) => {
-    if (window.confirm(`Apakah Anda yakin ingin menghapus kategori "${nama}"? Semua transaksi dengan kategori ini akan dipindahkan ke "Uncategorized".`)) {
+    if (window.confirm(`Apakah Anda yakin ingin menghapus kategori "${nama}"? Semua transaksi dengan kategori ini akan dipindahkan ke "Tanpa Kategori".`)) {
       setIsSubmitting(true);
       const result = await deleteCategory(id);
 
@@ -293,7 +293,7 @@ export default function CategoriesPage() {
               </p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Kategori default (Makanan, Transportasi, Pendidikan, Hiburan) akan dibuat otomatis</li>
-                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke &quot;Uncategorized&quot;</li>
+                <li>Menghapus kategori akan memindahkan semua transaksi terkait ke &quot;Tanpa Kategori&quot;</li>
                 <li>Nama kategori tidak boleh sama</li>
               </ul>
             </div>

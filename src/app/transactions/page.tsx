@@ -22,19 +22,15 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatCurrency, formatDate } from '@/utils/helpers';
-import type { FilterOptions } from '@/types';
+import type { FilterOptions, Transaction } from '@/types';
 
 export default function TransactionsPage() {
   const { user, initialized } = useAuthStore();
   const {
-    transactions,
+    transactions: allTransactions,
     loading,
     hasMore,
-    filters,
-    fetchTransactions,
-    deleteTransaction,
-    setFilters,
-    clearFilters
+    fetchTransactions
   } = useTransactionStore();
   const { categories, fetchCategories } = useCategoryStore();
   const { isOnline } = useOnlineStatus();
@@ -53,12 +49,45 @@ export default function TransactionsPage() {
     search: ''
   });
 
+  // Local state for filtered transactions
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+
   useEffect(() => {
     if (user && initialized) {
       fetchCategories();
       fetchTransactions(true);
     }
   }, [user, initialized, fetchCategories, fetchTransactions]);
+
+  // Apply local filtering when transactions or filters change
+  useEffect(() => {
+    let result = [...allTransactions];
+
+    // Apply category filter
+    if (filterForm.kategori_id) {
+      result = result.filter(t => t.kategori_id === filterForm.kategori_id);
+    }
+
+    // Apply date filters
+    if (filterForm.startDate) {
+      result = result.filter(t => t.tanggal >= filterForm.startDate!);
+    }
+
+    if (filterForm.endDate) {
+      result = result.filter(t => t.tanggal <= filterForm.endDate!);
+    }
+
+    // Apply search filter
+    if (filterForm.search) {
+      const searchLower = filterForm.search.toLowerCase();
+      result = result.filter(t =>
+        (t.catatan && t.catatan.toLowerCase().includes(searchLower)) ||
+        (t.kategori_id && categories.find(c => c.id === t.kategori_id)?.nama.toLowerCase().includes(searchLower))
+      );
+    }
+
+    setFilteredTransactions(result);
+  }, [allTransactions, filterForm, categories]);
 
   // Handle scroll for "scroll to top" button
   useEffect(() => {
@@ -86,15 +115,12 @@ export default function TransactionsPage() {
   }, [loading, hasMore, fetchTransactions]);
 
   const handleSearch = useCallback(() => {
-    const newFilters = { ...filters, search: searchQuery };
-    setFilters(newFilters);
-    fetchTransactions(true);
-  }, [searchQuery, filters, setFilters, fetchTransactions]);
+    setFilterForm(prev => ({ ...prev, search: searchQuery }));
+  }, [searchQuery]);
 
   const handleApplyFilters = () => {
-    setFilters(filterForm);
+    // Filters are applied automatically through the useEffect above
     setShowFilters(false);
-    fetchTransactions(true);
   };
 
   const handleClearFilters = () => {
@@ -105,15 +131,13 @@ export default function TransactionsPage() {
       search: ''
     });
     setSearchQuery('');
-    clearFilters();
-    fetchTransactions(true);
   };
 
   const handleDeleteTransaction = async (id: string) => {
     if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
 
     setDeleteLoading(id);
-    const result = await deleteTransaction(id);
+    const result = await useTransactionStore.getState().deleteTransaction(id);
 
     if (result.error) {
       alert('Gagal menghapus transaksi: ' + result.error);
@@ -126,19 +150,19 @@ export default function TransactionsPage() {
   };
 
   const getCategoryName = (transaction: any) => {
-    // For income transactions, show "Pemasukan" instead of "Uncategorized"
+    // For income transactions, show "Pemasukan" instead of "Tanpa Kategori"
     if (transaction.tipe === 'pemasukan') {
       return 'Pemasukan';
     }
 
-    // For expenses, show category name if available, otherwise "Uncategorized"
-    if (!transaction.kategori_id) return 'Uncategorized';
+    // For expenses, show category name if available, otherwise "Tanpa Kategori"
+    if (!transaction.kategori_id) return 'Tanpa Kategori';
     const category = categories.find(c => c.id === transaction.kategori_id);
     return category?.nama || 'Unknown';
   };
 
   const getActiveFiltersCount = () => {
-    return Object.values(filters).filter(value => value && value !== '').length;
+    return Object.values(filterForm).filter(value => value && value !== '').length;
   };
 
   return (
@@ -251,9 +275,9 @@ export default function TransactionsPage() {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button onClick={handleApplyFilters} className="flex-1">
+                  { /* <Button onClick={handleApplyFilters} className="flex-1">
                     Terapkan Filter
-                  </Button>
+                  </Button> */}
                   <Button variant="outline" onClick={handleClearFilters} className="flex-1">
                     Reset Filter
                   </Button>
@@ -266,7 +290,7 @@ export default function TransactionsPage() {
 
       {/* Transaction List */}
       <div className="px-4 py-6">
-        {transactions.length === 0 ? (
+        {filteredTransactions.length === 0 ? (
           <Card className="p-8 text-center">
             <div className="text-gray-400 mb-4">
               <Calendar className="h-12 w-12 mx-auto" />
@@ -286,7 +310,7 @@ export default function TransactionsPage() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {transactions.map((transaction) => (
+            {filteredTransactions.map((transaction) => (
               <Card key={transaction.id} className="transaction-card">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -337,14 +361,14 @@ export default function TransactionsPage() {
             ))}
 
             {/* Loading more indicator */}
-            {loading && transactions.length > 0 && (
+            {loading && filteredTransactions.length > 0 && (
               <div className="text-center py-4 text-gray-500 text-sm">
                 Memuat lebih banyak...
               </div>
             )}
 
             {/* No more data */}
-            {!hasMore && transactions.length > 0 && (
+            {!hasMore && filteredTransactions.length > 0 && (
               <div className="text-center py-4 text-gray-500 text-sm">
                 Tidak ada transaksi lagi
               </div>
