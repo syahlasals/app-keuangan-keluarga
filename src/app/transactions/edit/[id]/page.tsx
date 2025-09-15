@@ -108,9 +108,9 @@ export default function EditTransactionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
+    <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white/90 border-b backdrop-blur-md shadow-glass">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center">
             <Link href="/transactions" className="mr-4">
@@ -118,17 +118,17 @@ export default function EditTransactionPage() {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h1 className="text-xl font-semibold text-gray-900">Edit Transaksi</h1>
+            <h1 className="text-xl font-semibold text-text-900">Edit Transaksi</h1>
           </div>
         </div>
       </div>
 
       <div className="px-4 py-6">
         <form onSubmit={handleSubmit}>
-          <Card className="mb-6">
+          <Card className="mb-6 glass-card glass-card-hover">
             <div className="p-6">
               {errors.submit && (
-                <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg">
+                <div className="mb-4 p-3 bg-danger-50/80 border border-danger-200/50 text-danger-700 rounded-lg backdrop-blur-md shadow-glass">
                   {errors.submit}
                 </div>
               )}
@@ -136,27 +136,27 @@ export default function EditTransactionPage() {
               <div className="space-y-4">
                 {/* Transaction Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-700 mb-2">
                     Tipe Transaksi
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pemasukan' }))}
-                      className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pemasukan'
-                        ? 'border-success-500 bg-success-50 text-success-700'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                      className={`p-3 border rounded-lg text-center transition-all duration-300 ${formData.tipe === 'pemasukan'
+                        ? 'border-success-500 bg-success-50/90 text-success-700 shadow-glass'
+                        : 'border-text-300 text-text-700 hover:bg-text-50/70'
+                        } backdrop-blur-md`}
                     >
                       Pemasukan
                     </button>
                     <button
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pengeluaran' }))}
-                      className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pengeluaran'
-                        ? 'border-danger-500 bg-danger-50 text-danger-700'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
+                      className={`p-3 border rounded-lg text-center transition-all duration-300 ${formData.tipe === 'pengeluaran'
+                        ? 'border-danger-500 bg-danger-50/90 text-danger-700 shadow-glass'
+                        : 'border-text-300 text-text-700 hover:bg-text-50/70'
+                        } backdrop-blur-md`}
                     >
                       Pengeluaran
                     </button>
@@ -171,7 +171,7 @@ export default function EditTransactionPage() {
                   onChange={handleNominalChange}
                   placeholder="0"
                   error={errors.nominal}
-                  leftIcon={<span className="text-gray-500">Rp</span>}
+                  leftIcon={<span className="text-text-400">Rp</span>}
                 />
 
                 {/* Category */}
@@ -194,7 +194,7 @@ export default function EditTransactionPage() {
 
                 {/* Notes */}
                 <div>
-                  <label htmlFor="catatan" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="catatan" className="block text-sm font-medium text-text-700 mb-1">
                     Catatan (Opsional)
                   </label>
                   <textarea
@@ -203,7 +203,7 @@ export default function EditTransactionPage() {
                     onChange={(e) => setFormData(prev => ({ ...prev, catatan: e.target.value }))}
                     placeholder="Tambahkan catatan..."
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-text-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white/80 backdrop-blur-md shadow-glass"
                   />
                 </div>
               </div>

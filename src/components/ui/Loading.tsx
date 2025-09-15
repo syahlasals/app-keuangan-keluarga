@@ -19,15 +19,17 @@ const Loading: React.FC<LoadingProps> = ({
   };
 
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-2', className)}>
+    <div className={cn('flex flex-col items-center justify-center gap-3', className)}>
       <div
         className={cn(
-          'animate-spin rounded-full border-2 border-gray-300 border-t-primary',
+          'animate-spin rounded-full border-4 border-text-200 border-t-primary-500 backdrop-blur-md shadow-glass',
           sizeClasses[size]
         )}
       />
       {text && (
-        <p className="text-sm text-gray-600">{text}</p>
+        <p className="text-sm text-text-600 bg-white/70 px-3 py-1 rounded-full backdrop-blur-md shadow-glass">
+          {text}
+        </p>
       )}
     </div>
   );

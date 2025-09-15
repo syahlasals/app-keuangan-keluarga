@@ -68,7 +68,7 @@ export default function Modal({
       >
         {/* Background overlay */}
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          className="fixed inset-0 bg-black/20 transition-opacity backdrop-blur-md"
           aria-hidden="true"
         />
 
@@ -83,13 +83,13 @@ export default function Modal({
         {/* Modal panel */}
         <div
           ref={modalRef}
-          className={`inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full ${sizeClasses[size]}`}
+          className={`inline-block align-bottom bg-white/90 rounded-2xl text-left overflow-hidden shadow-glass-xl transform transition-all sm:my-8 sm:align-middle sm:w-full backdrop-blur-md border border-white/40 ${sizeClasses[size]} animate-in fade-in-90 zoom-in-90 duration-300`}
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/40">
               {title && (
-                <h3 className="text-lg font-medium text-gray-900" id="modal-title">
+                <h3 className="text-lg font-semibold text-text-900" id="modal-title">
                   {title}
                 </h3>
               )}
@@ -97,17 +97,17 @@ export default function Modal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="rounded-lg text-text-400 hover:text-text-500 hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors p-1 backdrop-blur-md shadow-glass"
                 >
                   <span className="sr-only">Close</span>
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5" />
                 </button>
               )}
             </div>
           )}
 
           {/* Content */}
-          <div className="px-6 py-4">
+          <div className="px-6 py-5">
             {children}
           </div>
         </div>

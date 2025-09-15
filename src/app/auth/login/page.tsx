@@ -56,14 +56,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 px-4">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-100/90 to-background-hint-100/90 px-4 backdrop-blur-md">
+      <div className="max-w-md w-full space-y-8 glass-card glass-card-hover p-8 shadow-glass-xl">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-primary-600 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto h-16 w-16 bg-primary-500/90 rounded-2xl flex items-center justify-center mb-4 shadow-glass backdrop-blur-md">
             <span className="text-white text-2xl font-bold">KK</span>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Masuk</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-3xl font-bold text-text-900">Masuk</h2>
+          <p className="mt-2 text-text-600">
             Masuk ke akun Keuangan Keluarga Anda
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {/* Development Notice */}
           {isMockAuth() && (
-            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg">
+            <div className="bg-secondary-100/90 border border-secondary-200/50 text-secondary-700 px-4 py-3 rounded-xl shadow-glass backdrop-blur-md">
               <div className="flex items-start">
                 <Info className="h-5 w-5 mt-0.5 mr-2 flex-shrink-0" />
                 <div className="text-sm">
@@ -83,7 +83,7 @@ export default function LoginPage() {
           )}
 
           {error && (
-            <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
+            <div className="bg-danger-50/90 border border-danger-200/50 text-danger-700 px-4 py-3 rounded-xl shadow-glass backdrop-blur-md">
               {error}
             </div>
           )}
@@ -95,7 +95,7 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-text-400" />
                 </div>
                 <input
                   id="email"
@@ -117,7 +117,7 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-text-400" />
                 </div>
                 <input
                   id="password"
@@ -136,9 +136,9 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
+                    <EyeOff className="h-5 w-5 text-text-400" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
+                    <Eye className="h-5 w-5 text-text-400" />
                   )}
                 </button>
               </div>
@@ -148,7 +148,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-between">
             <Link
               href="/auth/reset-password"
-              className="text-primary-600 hover:text-primary-500 text-sm"
+              className="text-primary-500 hover:text-primary-600 text-sm transition-colors"
             >
               Lupa password?
             </Link>
@@ -158,18 +158,18 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn btn-primary w-full text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full text-lg py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-glass hover:shadow-glass-lg backdrop-blur-md"
             >
               {isSubmitting ? 'Masuk...' : 'Masuk'}
             </button>
           </div>
 
           <div className="text-center">
-            <p className="text-gray-600">
+            <p className="text-text-600">
               Belum punya akun?{' '}
               <Link
                 href="/auth/register"
-                className="text-primary-600 hover:text-primary-500 font-medium"
+                className="text-primary-500 hover:text-primary-600 font-medium transition-colors"
               >
                 Daftar sekarang
               </Link>

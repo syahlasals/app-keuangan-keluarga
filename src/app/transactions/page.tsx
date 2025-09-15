@@ -166,21 +166,21 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
+    <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-40">
+      <div className="bg-white/90 border-b sticky top-0 z-40 shadow-glass backdrop-blur-md">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">Transaksi</h1>
+            <h1 className="text-xl font-semibold text-text-900">Transaksi</h1>
             <div className="flex items-center space-x-2">
               <SyncStatus showText size="sm" />
               {!isOnline && (
-                <div className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded">
+                <div className="text-xs bg-amber-100/80 text-amber-700 px-2.5 py-1 rounded-lg backdrop-blur-md shadow-glass">
                   Offline
                 </div>
               )}
               <Link href="/transactions/add">
-                <Button size="sm">
+                <Button size="sm" className="flex items-center rounded-xl">
                   <Plus className="h-4 w-4 mr-2" />
                   Tambah
                 </Button>
@@ -191,7 +191,7 @@ export default function TransactionsPage() {
           {/* Search Bar */}
           <div className="mt-3 flex space-x-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-400" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -203,11 +203,11 @@ export default function TransactionsPage() {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={`relative ${getActiveFiltersCount() > 0 ? 'bg-primary-50 border-primary-200' : ''}`}
+              className={`relative ${getActiveFiltersCount() > 0 ? 'bg-primary-100/80 border-primary-200/50' : ''}`}
             >
               <Filter className="h-4 w-4" />
               {getActiveFiltersCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-primary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {getActiveFiltersCount()}
                 </span>
               )}
@@ -216,10 +216,10 @@ export default function TransactionsPage() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <Card className="mt-3 p-4">
+            <Card className="mt-3 p-4 shadow-glass glass-card">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-900">Filter Transaksi</h3>
+                  <h3 className="font-semibold text-text-900">Filter Transaksi</h3>
                   <Button
                     variant="outline"
                     size="sm"
@@ -232,7 +232,7 @@ export default function TransactionsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Category Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-text-700 mb-2">
                       Kategori
                     </label>
                     <select
@@ -251,7 +251,7 @@ export default function TransactionsPage() {
 
                   {/* Start Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-text-700 mb-2">
                       Dari Tanggal
                     </label>
                     <Input
@@ -263,7 +263,7 @@ export default function TransactionsPage() {
 
                   {/* End Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-text-700 mb-2">
                       Sampai Tanggal
                     </label>
                     <Input
@@ -275,9 +275,6 @@ export default function TransactionsPage() {
                 </div>
 
                 <div className="flex space-x-2">
-                  { /* <Button onClick={handleApplyFilters} className="flex-1">
-                    Terapkan Filter
-                  </Button> */}
                   <Button variant="outline" onClick={handleClearFilters} className="flex-1">
                     Reset Filter
                   </Button>
@@ -291,18 +288,18 @@ export default function TransactionsPage() {
       {/* Transaction List */}
       <div className="px-4 py-6">
         {filteredTransactions.length === 0 ? (
-          <Card className="p-8 text-center">
-            <div className="text-gray-400 mb-4">
+          <Card className="p-8 text-center shadow-glass-xl glass-card glass-card-hover">
+            <div className="text-text-400 mb-4">
               <Calendar className="h-12 w-12 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-text-900 mb-2">
               Belum ada transaksi
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-text-500 mb-4">
               Mulai catat pemasukan dan pengeluaran Anda
             </p>
             <Link href="/transactions/add">
-              <Button>
+              <Button className="flex items-center mx-auto rounded-xl">
                 <Plus className="h-4 w-4 mr-2" />
                 Tambah Transaksi Pertama
               </Button>
@@ -311,19 +308,19 @@ export default function TransactionsPage() {
         ) : (
           <div className="space-y-3">
             {filteredTransactions.map((transaction) => (
-              <Card key={transaction.id} className="transaction-card">
+              <Card key={transaction.id} className="transaction-card shadow-glass hover:shadow-glass-lg glass-card glass-card-hover">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <span className={`text-lg font-semibold ${transaction.tipe === 'pemasukan' ? 'text-income' : 'text-expense'}`}>
+                        <span className={`text-lg font-semibold ${transaction.tipe === 'pemasukan' ? 'text-accent-500' : 'text-danger-600'}`}>
                           {transaction.tipe === 'pemasukan' ? '+' : '-'}{formatCurrency(transaction.nominal)}
                         </span>
                         <TransactionStatus status={transaction.status} />
                       </div>
                       <div className="flex space-x-1">
                         <Link href={`/transactions/edit/${transaction.id}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="p-2 rounded-lg">
                             <Edit2 className="h-4 w-4" />
                           </Button>
                         </Link>
@@ -332,14 +329,14 @@ export default function TransactionsPage() {
                           size="sm"
                           onClick={() => handleDeleteTransaction(transaction.id)}
                           loading={deleteLoading === transaction.id}
-                          className="text-danger-600 hover:text-danger-700"
+                          className="text-danger-600 hover:text-danger-700 p-2 rounded-lg"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm text-gray-500 space-x-4">
+                    <div className="flex items-center text-sm text-text-500 space-x-4">
                       <div className="flex items-center">
                         <Tag className="h-4 w-4 mr-1" />
                         {getCategoryName(transaction)}
@@ -351,7 +348,7 @@ export default function TransactionsPage() {
                     </div>
 
                     {transaction.catatan && (
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-text-600 mt-2">
                         {transaction.catatan}
                       </p>
                     )}
@@ -362,14 +359,14 @@ export default function TransactionsPage() {
 
             {/* Loading more indicator */}
             {loading && filteredTransactions.length > 0 && (
-              <div className="text-center py-4 text-gray-500 text-sm">
+              <div className="text-center py-4 text-text-500 text-sm">
                 Memuat lebih banyak...
               </div>
             )}
 
             {/* No more data */}
             {!hasMore && filteredTransactions.length > 0 && (
-              <div className="text-center py-4 text-gray-500 text-sm">
+              <div className="text-center py-4 text-text-500 text-sm">
                 Tidak ada transaksi lagi
               </div>
             )}
@@ -381,7 +378,7 @@ export default function TransactionsPage() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 right-4 bg-primary-600 text-white p-3 rounded-full shadow-lg hover:bg-primary-700 transition-colors z-50 md:bottom-8"
+          className="fixed bottom-24 right-4 bg-primary-500/90 text-white p-3 rounded-full shadow-glass-lg hover:bg-primary-600 transition-all duration-300 z-50 md:bottom-8 hover:shadow-xl backdrop-blur-md"
         >
           <ArrowUp className="h-5 w-5" />
         </button>
