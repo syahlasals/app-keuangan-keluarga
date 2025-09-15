@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-09-15
+
+### Added
+- Conditional category field display in transaction forms (hidden for income, visible for expenses)
+- Transaction detail view mode with improved UX for editing and deleting transactions
+- Enhanced UI consistency across all pages with modern glassmorphism design
+
+### Changed
+- Updated project version to 1.0.3 in package.json
+- Improved transaction management flow with detail view before edit/delete actions
+- Enhanced edit transaction page to hide category field when transaction type is income
+
+### Fixed
+- UI consistency issues with button styling across different pages
+- Navigation bar styling with rounded top corners for better visual appeal
+- Transaction card design with cleaner layout and improved user experience
+
 ## [1.0.2] - 2025-09-15
 
 ### Added

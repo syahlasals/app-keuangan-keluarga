@@ -74,7 +74,8 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 * Mobile-first, responsif untuk laptop/desktop.
 * Bottom navigation: Dashboard / Transaksi / Profil (logout).
 * Card sederhana untuk menampilkan transaksi (Nominal, Kategori, Catatan).
-* UI style: modern clean dengan nuansa hijau/biru finance.
+* UI style: modern clean dengan nuansa hijau/biru finance dengan efek glassmorphism.
+* Pengalaman pengguna yang ditingkatkan dengan tampilan detail transaksi sebelum mengedit atau menghapus.
 * Bahasa: Indonesia.
 * Format uang: titik pemisah ribuan (`Rp 10.000`).
 
@@ -152,7 +153,8 @@ string
 3. **Dashboard** → Pengguna melihat ringkasan saldo, pemasukan/pengeluaran bulan ini, dan grafik harian.
 4. **Tambah transaksi** → pilih tipe (pemasukan/pengeluaran), nominal, kategori (hanya untuk pengeluaran), tanggal, catatan → simpan → tampil di history.
 5. **History transaksi** → default descending, infinite scroll, filter kategori/rentang waktu, search.
-6. **Logout** dari menu profil.
+6. **Lihat detail transaksi** → klik pada transaksi untuk melihat detail lengkap sebelum mengedit atau menghapus.
+7. **Logout** dari menu profil.
 
 ---
 

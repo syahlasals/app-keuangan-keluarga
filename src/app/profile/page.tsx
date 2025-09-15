@@ -185,7 +185,7 @@ export default function ProfilePage() {
           <CardContent className="p-4">
             <div className="text-center text-sm text-text-500">
               <h3 className="font-semibold text-text-800 mb-2">Keuangan Keluarga PWA</h3>
-              <p className="mb-1">Versi 1.0.2</p>
+              <p className="mb-1">Versi 1.0.3</p>
               <p className="mb-3">Kelola keuangan keluarga dengan mudah</p>
 
               <div className="flex items-center justify-center space-x-4 text-xs">
