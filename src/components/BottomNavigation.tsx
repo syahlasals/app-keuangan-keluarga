@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, CreditCard, User, Settings } from 'lucide-react';
+import { Home, CreditCard, Settings, User } from 'lucide-react';
 
 interface NavItem {
   href: string;
@@ -51,8 +51,8 @@ export default function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-bottom md:hidden">
-      <div className="flex items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 border-t border-white/40 safe-bottom md:hidden shadow-glass backdrop-blur-md">
+      <div className="flex items-center justify-around py-3">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.activePatterns);
@@ -61,12 +61,12 @@ export default function BottomNavigation() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center py-2 px-3 transition-colors ${active
-                  ? 'text-primary-600'
-                  : 'text-gray-500 hover:text-gray-700'
-                }`}
+              className={`flex flex-col items-center py-2 px-3 transition-all duration-300 rounded-xl ${active
+                ? 'text-primary-500 bg-primary-100/80 shadow-glass'
+                : 'text-text-500 hover:text-text-700 hover:bg-white/50'
+                } backdrop-blur-md`}
             >
-              <Icon className={`h-6 w-6 mb-1 ${active ? 'text-primary-600' : ''}`} />
+              <Icon className={`h-6 w-6 mb-1 ${active ? 'text-primary-500' : ''}`} />
               <span className={`text-xs ${active ? 'font-medium' : ''}`}>
                 {item.label}
               </span>

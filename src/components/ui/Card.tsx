@@ -22,8 +22,8 @@ interface CardContentProps {
 }
 
 export default function Card({ children, className = '', onClick }: CardProps) {
-  const baseClasses = 'bg-white rounded-lg shadow-sm border border-gray-200';
-  const clickableClasses = onClick ? 'cursor-pointer hover:shadow-md transition-shadow duration-200' : '';
+  const baseClasses = 'bg-white/80 rounded-2xl shadow-glass border border-white/30 overflow-hidden transition-all duration-300 backdrop-blur-md';
+  const clickableClasses = onClick ? 'cursor-pointer hover:shadow-glass-lg hover:bg-white/90' : '';
 
   return (
     <div
@@ -37,7 +37,7 @@ export default function Card({ children, className = '', onClick }: CardProps) {
 
 export function CardHeader({ children, className = '' }: CardHeaderProps) {
   return (
-    <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>
+    <div className={`px-6 py-4 border-b border-white/30 ${className}`}>
       {children}
     </div>
   );
@@ -45,7 +45,7 @@ export function CardHeader({ children, className = '' }: CardHeaderProps) {
 
 export function CardTitle({ children, className = '' }: CardTitleProps) {
   return (
-    <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    <h3 className={`text-lg font-semibold text-text-900 ${className}`}>
       {children}
     </h3>
   );
@@ -53,7 +53,7 @@ export function CardTitle({ children, className = '' }: CardTitleProps) {
 
 export function CardContent({ children, className = '' }: CardContentProps) {
   return (
-    <div className={`px-6 py-4 ${className}`}>
+    <div className={`px-6 py-5 ${className}`}>
       {children}
     </div>
   );

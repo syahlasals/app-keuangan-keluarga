@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900 min-h-screen;
+    @apply bg-background-500 text-text-900 min-h-screen;
   }
 
   * {
@@ -20,45 +20,73 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply px-4 py-2.5 rounded-xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-500;
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-primary-500/90 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-glass hover:shadow-glass-lg backdrop-blur-sm;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+    @apply bg-secondary-500/90 text-white hover:bg-secondary-600 focus:ring-secondary-500 shadow-glass hover:shadow-glass-lg backdrop-blur-sm;
   }
 
-  .btn-success {
-    @apply bg-success-600 text-white hover:bg-success-700 focus:ring-success-500;
+  .btn-accent {
+    @apply bg-accent-500/90 text-white hover:bg-accent-600 focus:ring-accent-500 shadow-glass hover:shadow-glass-lg backdrop-blur-sm;
   }
 
   .btn-danger {
-    @apply bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500;
+    @apply bg-danger-600/90 text-white hover:bg-danger-700 focus:ring-danger-500 shadow-glass hover:shadow-glass-lg backdrop-blur-sm;
+  }
+
+  .btn-outline {
+    @apply border border-text-300 bg-white/80 text-text-700 hover:bg-white/90 focus:ring-primary-500 shadow-glass hover:shadow-glass-lg backdrop-blur-sm;
   }
 
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2.5 border border-text-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white/80 backdrop-blur-md border-opacity-50;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    @apply bg-white/80 rounded-2xl shadow-glass border border-white/30 overflow-hidden transition-all duration-300 backdrop-blur-md;
+  }
+
+  .card-hover {
+    @apply hover:shadow-glass-lg hover:bg-white/90;
   }
 
   .transaction-card {
-    @apply card p-4 hover:shadow-md transition-shadow duration-200;
+    @apply card p-4 hover:shadow-glass-lg transition-all duration-300 hover:bg-white/90;
   }
 
   .stat-card {
-    @apply card p-6 text-center;
+    @apply card p-6 text-center hover:bg-white/90 backdrop-blur-md;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/30 rounded-2xl shadow-glass;
+  }
+
+  .glass-card-hover {
+    @apply hover:bg-white/90 hover:shadow-glass-lg transition-all duration-300;
+  }
+
+  .gradient-header {
+    @apply bg-gradient-to-r from-primary-500/90 to-secondary-500/90 text-white backdrop-blur-md;
+  }
+
+  .section-title {
+    @apply text-lg font-semibold text-text-900 mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-sm text-text-600 mb-2;
   }
 }
 
 @layer utilities {
   .text-income {
-    @apply text-success-600;
+    @apply text-accent-500;
   }
 
   .text-expense {
@@ -66,11 +94,47 @@
   }
 
   .bg-income {
-    @apply bg-success-100;
+    @apply bg-accent-100/80 backdrop-blur-sm;
   }
 
   .bg-expense {
-    @apply bg-danger-100;
+    @apply bg-danger-100/80 backdrop-blur-sm;
+  }
+
+  .text-primary {
+    @apply text-primary-500;
+  }
+
+  .text-secondary {
+    @apply text-secondary-500;
+  }
+
+  .text-accent {
+    @apply text-accent-500;
+  }
+
+  .bg-primary-light {
+    @apply bg-primary-100/80 backdrop-blur-sm;
+  }
+
+  .bg-secondary-light {
+    @apply bg-secondary-100/80 backdrop-blur-sm;
+  }
+
+  .bg-accent-light {
+    @apply bg-accent-100/80 backdrop-blur-sm;
+  }
+
+  .border-primary {
+    @apply border-primary-200/50;
+  }
+
+  .border-secondary {
+    @apply border-secondary-200/50;
+  }
+
+  .border-accent {
+    @apply border-accent-200/50;
   }
 
   .safe-top {
@@ -80,5 +144,19 @@
 
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/80 border border-white/30;
+  }
+
+  .glass-hover {
+    @apply hover:bg-white/90 hover:shadow-glass-lg transition-all duration-300;
   }
 }

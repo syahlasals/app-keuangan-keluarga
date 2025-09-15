@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -127,18 +126,18 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
+    <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white/90 border-b shadow-glass backdrop-blur-md">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Link href="/profile" className="mr-4">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-xl">
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               </Link>
-              <h1 className="text-xl font-semibold text-gray-900">Kelola Kategori</h1>
+              <h1 className="text-xl font-semibold text-text-900">Kelola Kategori</h1>
             </div>
             <Button
               onClick={() => {
@@ -147,7 +146,7 @@ export default function CategoriesPage() {
                 setError('');
               }}
               size="sm"
-              className="flex items-center"
+              className="flex items-center rounded-xl"
             >
               <Plus className="h-4 w-4 mr-1" />
               Tambah
@@ -159,14 +158,14 @@ export default function CategoriesPage() {
       <div className="px-4 py-6">
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg">
+          <div className="mb-4 p-3 bg-danger-50/80 border border-danger-200/50 text-danger-700 rounded-xl backdrop-blur-md shadow-glass">
             {error}
           </div>
         )}
 
         {/* Add Category Form */}
         {showAddForm && (
-          <Card className="mb-6">
+          <Card className="mb-6 shadow-glass-xl glass-card glass-card-hover">
             <CardHeader>
               <CardTitle className="text-lg">Tambah Kategori Baru</CardTitle>
             </CardHeader>
@@ -183,6 +182,7 @@ export default function CategoriesPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting || !newCategoryName.trim()}
+                    className="rounded-xl"
                   >
                     {isSubmitting ? 'Menyimpan...' : 'Simpan'}
                   </Button>
@@ -195,6 +195,7 @@ export default function CategoriesPage() {
                       setError('');
                     }}
                     disabled={isSubmitting}
+                    className="rounded-xl"
                   >
                     Batal
                   </Button>
@@ -205,15 +206,15 @@ export default function CategoriesPage() {
         )}
 
         {/* Categories List */}
-        <Card>
+        <Card className="shadow-glass glass-card glass-card-hover">
           <CardHeader>
             <CardTitle className="text-lg">Daftar Kategori</CardTitle>
           </CardHeader>
           <CardContent>
             {categories.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">Belum ada kategori</p>
-                <Button onClick={() => setShowAddForm(true)}>
+                <p className="text-text-500 mb-4">Belum ada kategori</p>
+                <Button onClick={() => setShowAddForm(true)} className="rounded-xl">
                   <Plus className="h-4 w-4 mr-2" />
                   Tambah Kategori Pertama
                 </Button>
@@ -223,7 +224,7 @@ export default function CategoriesPage() {
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-white/70 rounded-xl hover:bg-white/80 transition-colors duration-300 backdrop-blur-md shadow-glass"
                   >
                     {editingCategory?.id === category.id ? (
                       <form onSubmit={handleEditCategory} className="flex-1 flex items-center space-x-3">
@@ -238,6 +239,7 @@ export default function CategoriesPage() {
                           type="submit"
                           size="sm"
                           disabled={isSubmitting || !editCategoryName.trim()}
+                          className="rounded-lg"
                         >
                           {isSubmitting ? 'Menyimpan...' : 'Simpan'}
                         </Button>
@@ -247,6 +249,7 @@ export default function CategoriesPage() {
                           size="sm"
                           onClick={cancelEdit}
                           disabled={isSubmitting}
+                          className="rounded-lg"
                         >
                           Batal
                         </Button>
@@ -254,8 +257,8 @@ export default function CategoriesPage() {
                     ) : (
                       <>
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900">{category.nama}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="font-medium text-text-900">{category.nama}</p>
+                          <p className="text-xs text-text-500">
                             Dibuat: {new Date(category.created_at).toLocaleDateString('id-ID')}
                           </p>
                         </div>
@@ -263,14 +266,14 @@ export default function CategoriesPage() {
                           <button
                             onClick={() => startEdit(category)}
                             disabled={isSubmitting}
-                            className="p-1 text-gray-400 hover:text-primary-600 transition-colors disabled:opacity-50"
+                            className="p-2 text-text-400 hover:text-primary-500 hover:bg-primary-100/70 transition-colors duration-300 rounded-lg disabled:opacity-50 backdrop-blur-md shadow-glass"
                           >
                             <Edit2 className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteCategory(category.id, category.nama)}
                             disabled={isSubmitting}
-                            className="p-1 text-gray-400 hover:text-danger-600 transition-colors disabled:opacity-50"
+                            className="p-2 text-text-400 hover:text-danger-600 hover:bg-danger-100/70 transition-colors duration-300 rounded-lg disabled:opacity-50 backdrop-blur-md shadow-glass"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -285,11 +288,11 @@ export default function CategoriesPage() {
         </Card>
 
         {/* Info Card */}
-        <Card className="mt-6">
+        <Card className="mt-6 shadow-glass glass-card glass-card-hover">
           <CardContent className="p-4">
-            <div className="text-sm text-gray-600">
-              <p className="mb-2">
-                <strong>Catatan:</strong>
+            <div className="text-sm text-text-600">
+              <p className="mb-2 font-semibold">
+                Catatan:
               </p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Kategori default (Makanan, Transportasi, Pendidikan, Hiburan) akan dibuat otomatis</li>
