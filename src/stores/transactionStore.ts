@@ -8,15 +8,12 @@ interface TransactionState {
   loading: boolean;
   hasMore: boolean;
   currentPage: number;
-  filters: FilterOptions;
 
   // Actions
   fetchTransactions: (reset?: boolean) => Promise<void>;
   createTransaction: (transaction: TransactionCreateInput) => Promise<{ error?: string }>;
   updateTransaction: (transaction: TransactionUpdateInput) => Promise<{ error?: string }>;
   deleteTransaction: (id: string) => Promise<{ error?: string }>;
-  setFilters: (filters: FilterOptions) => void;
-  clearFilters: () => void;
   setLoading: (loading: boolean) => void;
 
   // Helper methods
@@ -32,7 +29,6 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   loading: false,
   hasMore: true,
   currentPage: 0,
-  filters: {},
 
   fetchTransactions: async (reset = false) => {
     const { user } = useAuthStore.getState();
@@ -52,25 +48,6 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         .order('tanggal', { ascending: false })
         .order('created_at', { ascending: false })
         .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
-      // Apply filters
-      const { filters } = state;
-
-      if (filters.kategori_id) {
-        query = query.eq('kategori_id', filters.kategori_id);
-      }
-
-      if (filters.startDate) {
-        query = query.gte('tanggal', filters.startDate);
-      }
-
-      if (filters.endDate) {
-        query = query.lte('tanggal', filters.endDate);
-      }
-
-      if (filters.search) {
-        query = query.or(`catatan.ilike.%${filters.search}%,categories.nama.ilike.%${filters.search}%`);
-      }
 
       const { data, error } = await query;
 
@@ -199,14 +176,6 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       console.error('Error deleting transaction:', error);
       return handleDatabaseError(error);
     }
-  },
-
-  setFilters: (filters: FilterOptions) => {
-    set({ filters, currentPage: 0, hasMore: true });
-  },
-
-  clearFilters: () => {
-    set({ filters: {}, currentPage: 0, hasMore: true });
   },
 
   setLoading: (loading: boolean) => set({ loading }),

@@ -59,6 +59,19 @@ export default function DashboardPage() {
 
   const recentTransactions = transactions.slice(0, 5);
 
+  // Function to get the display name for a transaction
+  const getTransactionDisplayName = (transaction: any) => {
+    // For income transactions, show "Pemasukan" instead of "Tanpa Kategori"
+    if (transaction.tipe === 'pemasukan') {
+      return 'Pemasukan';
+    }
+
+    // For expenses, show category name if available, otherwise "Tanpa Kategori"
+    if (!transaction.kategori_id) return 'Tanpa Kategori';
+    const category = categories.find(c => c.id === transaction.kategori_id);
+    return category?.nama || 'Unknown';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
       {/* Header */}
@@ -165,8 +178,8 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {recentTransactions.map((transaction) => {
-                  const category = categories.find(c => c.id === transaction.kategori_id);
                   const isIncome = transaction.tipe === 'pemasukan';
+                  const displayName = getTransactionDisplayName(transaction);
 
                   return (
                     <div
@@ -176,7 +189,7 @@ export default function DashboardPage() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <p className="font-medium text-gray-900">
-                            {category?.nama || 'Uncategorized'}
+                            {displayName}
                           </p>
                           <div className={`text-lg font-semibold ${isIncome ? 'text-success-600' : 'text-danger-600'
                             }`}>

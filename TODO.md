@@ -28,7 +28,7 @@
 - [x] Create `users` table with required fields
 - [x] Create `categories` table with user relationship
 - [x] Create `transactions` table with proper relationships
-- [x] Insert default categories (Makanan, Transportasi, Pendidikan, Hiburan)
+- [x] Insert default categories (Makanan, Transportasi, Pendidikan, Hiburan, Rumah Tangga)
 - [x] Setup database indexes for performance
 - [x] Configure foreign key constraints
 
@@ -134,7 +134,7 @@
 - [x] Implement add category functionality
 - [x] Implement edit category functionality
 - [x] Implement delete category functionality
-- [x] Handle "Uncategorized" category migration
+- [x] Handle "Tanpa Kategori" category migration
 
 ### 7.2 Category Integration
 - [x] Create category dropdown component

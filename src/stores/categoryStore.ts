@@ -184,7 +184,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 
   deleteCategory: async (id: string) => {
     try {
-      // First, update all transactions with this category to null (Uncategorized)
+      // First, update all transactions with this category to null (Tanpa Kategori)
       const { error: updateError } = await supabase
         .from('transactions')
         .update({ kategori_id: null } as any)

@@ -2,7 +2,8 @@ export const DEFAULT_CATEGORIES = [
   'Makanan',
   'Transportasi',
   'Pendidikan',
-  'Hiburan'
+  'Hiburan',
+  'Rumah Tangga'
 ];
 
 export const TRANSACTION_TYPES = {

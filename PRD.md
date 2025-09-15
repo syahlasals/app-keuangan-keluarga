@@ -49,9 +49,9 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 
 ### 3.4 Kategori
 
-* Default kategori: Makanan, Transportasi, Pendidikan, Hiburan. Input berupa dropdown + opsi "Tambah kategori baru".
+* Default kategori: Makanan, Transportasi, Pendidikan, Hiburan, Rumah Tangga. Input berupa dropdown + opsi "Tambah kategori baru".
 * Manajemen Kategori: Pengguna dapat menambah, mengubah, atau menghapus kategori.
-* Penghapusan Kategori: Jika sebuah kategori dihapus, semua transaksi yang terkait akan dipindahkan ke kategori "Uncategorized".
+* Penghapusan Kategori: Jika sebuah kategori dihapus, semua transaksi yang terkait akan dipindahkan ke kategori "Tanpa Kategori".
 * Kategori hanya digunakan untuk transaksi pengeluaran, tidak untuk pemasukan.
 
 ### 3.5 Sinkronisasi & Status
@@ -130,13 +130,13 @@ string
 * `id` (UUID, PK)
 * `user_id` (FK → users.id)
 * `nama` (string)
-* Default: makanan, transportasi, pendidikan, hiburan.
+* Default: makanan, transportasi, pendidikan, hiburan, rumah tangga.
 
 #### Tabel `transactions`
 
 * `id` (UUID, PK)
 * `user_id` (FK → users.id)
-* `kategori_id` (FK → categories.id, nullable → "Uncategorized")
+* `kategori_id` (FK → categories.id, nullable → "Tanpa Kategori")
 * `nominal` (integer)
 * `tipe` (enum: pemasukan/pengeluaran)
 * `tanggal` (date)
