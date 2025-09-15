@@ -141,6 +141,7 @@
 - [x] Implement "Add new category" option
 - [x] Integrate categories with transaction forms
 - [x] Add category validation
+- [x] Implement conditional category display (only for expenses)
 
 ## Phase 8: Offline & Sync Features
 

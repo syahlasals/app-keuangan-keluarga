@@ -36,7 +36,7 @@ export default function AddTransactionPage() {
   }, [user, initialized, fetchCategories]);
 
   const categoryOptions = [
-    { value: '', label: 'Pilih Kategori' },
+    { value: '', label: 'Pilih Kategori (Opsional)' },
     ...categories.map(cat => ({ value: cat.id, label: cat.nama })),
   ];
 
@@ -50,6 +50,9 @@ export default function AddTransactionPage() {
     if (!formData.tanggal) {
       newErrors.tanggal = 'Tanggal wajib diisi';
     }
+
+    // Remove the category validation for expenses since it's now optional
+    // Only validate category for expenses if needed in the future
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -73,7 +76,8 @@ export default function AddTransactionPage() {
     const transactionData: TransactionCreateInput = {
       tipe: formData.tipe,
       nominal: parseFormattedNumber(formData.nominal),
-      kategori_id: formData.kategori_id || null,
+      // Only include category for expenses (but it's optional now)
+      kategori_id: formData.tipe === 'pengeluaran' ? (formData.kategori_id || null) : null,
       tanggal: formData.tanggal,
       catatan: formData.catatan.trim() || null,
     };
@@ -129,8 +133,8 @@ export default function AddTransactionPage() {
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pemasukan' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pemasukan'
-                          ? 'border-success-500 bg-success-50 text-success-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'border-success-500 bg-success-50 text-success-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pemasukan
@@ -139,8 +143,8 @@ export default function AddTransactionPage() {
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, tipe: 'pengeluaran' }))}
                       className={`p-3 border rounded-lg text-center transition-colors ${formData.tipe === 'pengeluaran'
-                          ? 'border-danger-500 bg-danger-50 text-danger-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'border-danger-500 bg-danger-50 text-danger-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       Pengeluaran
@@ -159,51 +163,45 @@ export default function AddTransactionPage() {
                   leftIcon={<span className="text-gray-500">Rp</span>}
                 />
 
-                {/* Category */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Kategori
-                    </label>
-                    {/* <button
-                      type="button"
-                      onClick={() => setShowAddCategory(!showAddCategory)}
-                      className="text-primary-600 text-sm hover:text-primary-700"
-                    >
-                      <Plus className="h-4 w-4 inline mr-1" />
-                      Tambah Kategori
-                    </button> */}
-                  </div>
-
-                  <Select
-                    value={formData.kategori_id}
-                    onChange={(e) => setFormData(prev => ({ ...prev, kategori_id: e.target.value }))}
-                    options={categoryOptions}
-                    placeholder="Pilih kategori"
-                  />
-
-                  {showAddCategory && (
-                    <div className="mt-2 flex space-x-2">
-                      <Input
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder="Nama kategori baru"
-                        className="flex-1"
-                      />
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() => {
-                          // TODO: Implement add category
-                          setShowAddCategory(false);
-                          setNewCategoryName('');
-                        }}
-                      >
-                        Tambah
-                      </Button>
+                {/* Category - Only show for expenses */}
+                {formData.tipe === 'pengeluaran' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Kategori (Opsional)
+                      </label>
                     </div>
-                  )}
-                </div>
+
+                    <Select
+                      value={formData.kategori_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, kategori_id: e.target.value }))}
+                      options={categoryOptions}
+                      placeholder="Pilih kategori (opsional)"
+                    />
+
+                    {showAddCategory && (
+                      <div className="mt-2 flex space-x-2">
+                        <Input
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                          placeholder="Nama kategori baru"
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => {
+                            // TODO: Implement add category
+                            setShowAddCategory(false);
+                            setNewCategoryName('');
+                          }}
+                        >
+                          Tambah
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Date */}
                 <Input
