@@ -72,7 +72,7 @@
   }
 
   .gradient-header {
-    @apply bg-gradient-to-r from-primary-500/90 to-secondary-500/90 text-white backdrop-blur-md;
+    @apply bg-gradient-to-r from-primary-500/90 to-secondary-500/90 text-white backdrop-blur-md rounded-b-3xl shadow-glass pb-8;
   }
 
   .section-title {

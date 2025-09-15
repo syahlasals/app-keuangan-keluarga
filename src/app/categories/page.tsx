@@ -128,14 +128,14 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white/90 border-b shadow-glass backdrop-blur-md">
+      <div className="bg-white/90 border-b shadow-glass backdrop-blur-md rounded-b-3xl">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Link href="/profile" className="mr-4">
-                <Button variant="outline" size="sm" className="rounded-xl">
+                <button className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass">
                   <ArrowLeft className="h-4 w-4" />
-                </Button>
+                </button>
               </Link>
               <h1 className="text-xl font-semibold text-text-900">Kelola Kategori</h1>
             </div>

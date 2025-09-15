@@ -109,7 +109,7 @@
 ### 6.1 Transaction CRUD
 - [x] Create transaction form component
 - [x] Implement add transaction functionality
-- [ ] Implement edit transaction functionality
+- [x] Implement edit transaction functionality
 - [x] Implement delete transaction functionality
 - [x] Add form validation and error handling
 
@@ -124,7 +124,7 @@
 - [x] Implement search functionality
 - [x] Create category filter dropdown
 - [x] Implement date range filter
-- [ ] Add transaction status indicators (pending/success)
+- [x] Add transaction status indicators (pending/success)
 - [x] Format currency display (Rp 10.000)
 
 ## Phase 7: Category Management
@@ -166,9 +166,9 @@
 ## Phase 9: User Profile & Settings
 
 ### 9.1 Profile Page
-- [ ] Create profile page layout
-- [ ] Display user information
-- [ ] Implement logout functionality
+- [x] Create profile page layout
+- [x] Display user information
+- [x] Implement logout functionality
 - [ ] Add account management options
 
 ### 9.2 Settings
@@ -179,16 +179,16 @@
 ## Phase 10: UI/UX Polish
 
 ### 10.1 Visual Design
-- [ ] Implement green/blue finance color scheme
-- [ ] Add consistent spacing and typography
+- [x] Implement green/blue finance color scheme
+- [x] Add consistent spacing and typography
 - [ ] Create loading skeletons
-- [ ] Add smooth transitions and animations
+- [x] Add smooth transitions and animations
 
 ### 10.2 Responsive Design
-- [ ] Test and fix mobile responsiveness
-- [ ] Optimize for tablet view
-- [ ] Ensure desktop compatibility
-- [ ] Test on various screen sizes
+- [x] Test and fix mobile responsiveness
+- [x] Optimize for tablet view
+- [x] Ensure desktop compatibility
+- [x] Test on various screen sizes
 
 ### 10.3 Accessibility
 - [ ] Add proper ARIA labels
@@ -271,7 +271,7 @@
 ## Development Notes
 
 ### Key Technologies
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
 - **State Management**: Zustand
 - **Charts**: Recharts
 - **Backend**: Supabase (Auth + Database)

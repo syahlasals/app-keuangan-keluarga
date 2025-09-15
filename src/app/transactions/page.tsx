@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
@@ -25,6 +26,7 @@ import { formatCurrency, formatDate } from '@/utils/helpers';
 import type { FilterOptions, Transaction } from '@/types';
 
 export default function TransactionsPage() {
+  const router = useRouter();
   const { user, initialized } = useAuthStore();
   const {
     transactions: allTransactions,
@@ -51,6 +53,10 @@ export default function TransactionsPage() {
 
   // Local state for filtered transactions
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+
+  // State for transaction detail view
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [showTransactionDetail, setShowTransactionDetail] = useState(false);
 
   useEffect(() => {
     if (user && initialized) {
@@ -165,10 +171,26 @@ export default function TransactionsPage() {
     return Object.values(filterForm).filter(value => value && value !== '').length;
   };
 
+  const handleViewTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setShowTransactionDetail(true);
+  };
+
+  const closeTransactionDetail = () => {
+    setShowTransactionDetail(false);
+    setSelectedTransaction(null);
+  };
+
+  const handleEditTransaction = () => {
+    if (selectedTransaction) {
+      router.push(`/transactions/edit/${selectedTransaction.id}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white/90 border-b sticky top-0 z-40 shadow-glass backdrop-blur-md">
+      <div className="bg-white/90 border-b sticky top-0 z-40 shadow-glass backdrop-blur-md rounded-b-3xl">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-text-900">Transaksi</h1>
@@ -285,9 +307,92 @@ export default function TransactionsPage() {
         </div>
       </div>
 
-      {/* Transaction List */}
+      {/* Transaction List or Detail View */}
       <div className="px-4 py-6">
-        {filteredTransactions.length === 0 ? (
+        {showTransactionDetail && selectedTransaction ? (
+          /* Transaction Detail View */
+          <Card className="transaction-card shadow-glass glass-card glass-card-hover">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-text-900">Detail Transaksi</h2>
+                <button
+                  onClick={closeTransactionDetail}
+                  className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-lg disabled:opacity-50 backdrop-blur-md shadow-glass"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center pb-3 border-b border-text-200">
+                  <span className="text-text-600">Jenis Transaksi</span>
+                  <span className={`font-semibold ${selectedTransaction.tipe === 'pemasukan' ? 'text-accent-500' : 'text-danger-600'}`}>
+                    {selectedTransaction.tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran'}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-3 border-b border-text-200">
+                  <span className="text-text-600">Nominal</span>
+                  <span className={`text-lg font-semibold ${selectedTransaction.tipe === 'pemasukan' ? 'text-accent-500' : 'text-danger-600'}`}>
+                    {selectedTransaction.tipe === 'pemasukan' ? '+' : '-'}{formatCurrency(selectedTransaction.nominal)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-3 border-b border-text-200">
+                  <span className="text-text-600">Kategori</span>
+                  <span className="font-medium text-text-900">
+                    {getCategoryName(selectedTransaction)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-3 border-b border-text-200">
+                  <span className="text-text-600">Tanggal</span>
+                  <span className="font-medium text-text-900">
+                    {formatDate(selectedTransaction.tanggal)}
+                  </span>
+                </div>
+
+                {selectedTransaction.catatan && (
+                  <div className="pb-3 border-b border-text-200">
+                    <span className="text-text-600 block mb-1">Catatan</span>
+                    <p className="text-text-900">{selectedTransaction.catatan}</p>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center pb-3 border-b border-text-200">
+                  <span className="text-text-600">Status</span>
+                  <TransactionStatus status={selectedTransaction.status} />
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-8">
+                <Button
+                  variant="outline"
+                  onClick={handleEditTransaction}
+                  className="flex-1 flex items-center justify-center rounded-xl"
+                >
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (selectedTransaction && confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                      handleDeleteTransaction(selectedTransaction.id);
+                      closeTransactionDetail();
+                    }
+                  }}
+                  loading={deleteLoading === selectedTransaction.id}
+                  className="flex-1 flex items-center justify-center rounded-xl text-danger-600 border-danger-200 hover:bg-danger-50/80"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Hapus
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ) : filteredTransactions.length === 0 ? (
+          /* Empty State */
           <Card className="p-8 text-center shadow-glass-xl glass-card glass-card-hover">
             <div className="text-text-400 mb-4">
               <Calendar className="h-12 w-12 mx-auto" />
@@ -306,10 +411,15 @@ export default function TransactionsPage() {
             </Link>
           </Card>
         ) : (
+          /* Transaction List */
           <div className="space-y-3">
             {filteredTransactions.map((transaction) => (
-              <Card key={transaction.id} className="transaction-card shadow-glass hover:shadow-glass-lg glass-card glass-card-hover">
-                <div className="flex items-center justify-between">
+              <Card
+                key={transaction.id}
+                className="transaction-card shadow-glass hover:shadow-glass-lg glass-card glass-card-hover cursor-pointer"
+                onClick={() => handleViewTransaction(transaction)}
+              >
+                <div className="flex items-center justify-between p-2">
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
@@ -317,22 +427,6 @@ export default function TransactionsPage() {
                           {transaction.tipe === 'pemasukan' ? '+' : '-'}{formatCurrency(transaction.nominal)}
                         </span>
                         <TransactionStatus status={transaction.status} />
-                      </div>
-                      <div className="flex space-x-1">
-                        <Link href={`/transactions/edit/${transaction.id}`}>
-                          <Button variant="outline" size="sm" className="p-2 rounded-lg">
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteTransaction(transaction.id)}
-                          loading={deleteLoading === transaction.id}
-                          className="text-danger-600 hover:text-danger-700 p-2 rounded-lg"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
                     </div>
 
@@ -348,10 +442,15 @@ export default function TransactionsPage() {
                     </div>
 
                     {transaction.catatan && (
-                      <p className="text-sm text-text-600 mt-2">
+                      <p className="text-sm text-text-600 mt-2 truncate">
                         {transaction.catatan}
                       </p>
                     )}
+                  </div>
+                  <div className="ml-2 text-text-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
                   </div>
                 </div>
               </Card>

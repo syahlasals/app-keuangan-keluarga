@@ -51,7 +51,7 @@ export default function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 border-t border-white/40 safe-bottom md:hidden shadow-glass backdrop-blur-md">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 border-t border-white/40 safe-bottom md:hidden shadow-glass backdrop-blur-md rounded-t-3xl">
       <div className="flex items-center justify-around py-3">
         {navItems.map((item) => {
           const Icon = item.icon;

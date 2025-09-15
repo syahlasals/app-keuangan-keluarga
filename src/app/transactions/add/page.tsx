@@ -99,13 +99,13 @@ export default function AddTransactionPage() {
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white/90 border-b backdrop-blur-md shadow-glass">
+      <div className="bg-white/90 border-b backdrop-blur-md shadow-glass rounded-b-3xl">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center">
             <Link href="/transactions" className="mr-4">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
+              <button className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass">
+                  <ArrowLeft className="h-4 w-4" />
+              </button>
             </Link>
             <h1 className="text-xl font-semibold text-text-900">Tambah Transaksi</h1>
           </div>
