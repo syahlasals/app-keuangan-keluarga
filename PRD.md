@@ -24,6 +24,7 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 * Reset Password: Fungsi reset password melalui email (menggunakan fitur default dari Supabase).
 * Logout: Keluar dari sesi aktif.
 * Login di beberapa perangkat secara bersamaan diizinkan.
+* Manajemen Profil: Pengguna dapat mengedit informasi profil mereka.
 
 ### 3.2 Manajemen Transaksi
 
@@ -42,10 +43,13 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
   * Search: Search transaksi berdasarkan kata kunci (catatan/kategori).
   * Filter: Filter transaksi berdasarkan kategori & rentang waktu.
 
+* Tampilan Detail Transaksi: Pengguna harus mengklik transaksi untuk melihat detail sebelum dapat mengedit atau menghapus.
+
 ### 3.3 Saldo
 
 * Perhitungan Saldo: Saldo total dihitung secara dinamis dari (Total Pemasukan - Total Pengeluaran).
 * Saldo Awal: Tidak ada kolom saldo awal statis. Untuk mengatur saldo awal, pengguna cukup menambahkan transaksi pemasukan dengan catatan "Saldo Awal" (default saldo 0).
+* Privasi Saldo: Pengguna dapat menyembunyikan saldo dengan ikon mata pada halaman dashboard dan profil.
 
 ### 3.4 Kategori
 
@@ -68,6 +72,7 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 * Ringkasan total saldo berjalan.
 * Ringkasan total pemasukan & pengeluaran bulan berjalan.
 * Grafik sederhana (line/bar chart) pemasukan vs pengeluaran bulan berjalan. Menampilkan pemasukan/pengeluaran harian dalam 1 bulan (sumbu X = tanggal).
+* Fitur privasi saldo dengan tombol toggle mata untuk menyembunyikan/menampilkan nominal saldo.
 
 ### 3.7 UI/UX
 
@@ -98,8 +103,8 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 
 * Framework: Next.js (React) untuk mendukung PWA, SEO-friendly, server-side rendering untuk web.
 * Styling: Tailwind CSS.
-* State management: Context API atau Zustand.
-* Chart: Recharts atau Chart.js.
+* State management: Zustand.
+* Chart: Recharts.
 
 ### 5.2 Backend
 
@@ -107,7 +112,7 @@ Backend as a Service (BaaS): Supabase.
 
 * **Supabase**:
 
-  * Authentication: Registrasi & login dengan email + password. Reset password via email.\r
+  * Authentication: Registrasi & login dengan email + password. Reset password via email.
   * Database: Hosting database PostgreSQL.
   * API: API otomatis untuk interaksi dengan database.
   * Hosting: Vercel (Frontend), Supabase (Backend & Database).
@@ -118,13 +123,9 @@ Backend as a Service (BaaS): Supabase.
 
 * `id` (UUID, PK)
 * `email` (string, unique)
-* `password_hash` (handled by Supabase)
-* `saldo_awal` (integer)
-* `Keterangan` (string, nullable)
-
-password_hash
-
-string
+* `nama` (string, nullable)
+* `created_at` (timestamp)
+* `updated_at` (timestamp)
 
 #### Tabel `categories`
 
@@ -154,7 +155,8 @@ string
 4. **Tambah transaksi** → pilih tipe (pemasukan/pengeluaran), nominal, kategori (hanya untuk pengeluaran), tanggal, catatan → simpan → tampil di history.
 5. **History transaksi** → default descending, infinite scroll, filter kategori/rentang waktu, search.
 6. **Lihat detail transaksi** → klik pada transaksi untuk melihat detail lengkap sebelum mengedit atau menghapus.
-7. **Logout** dari menu profil.
+7. **Edit profil** → akses dari halaman profil untuk mengubah nama pengguna.
+8. **Logout** dari menu profil.
 
 ---
 

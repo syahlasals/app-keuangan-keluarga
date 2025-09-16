@@ -11,11 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conditional category field display in transaction forms (hidden for income, visible for expenses)
 - Transaction detail view mode with improved UX for editing and deleting transactions
 - Enhanced UI consistency across all pages with modern glassmorphism design
+- User profile editing functionality with name update capability
+- Balance hiding feature with eye icon toggle on dashboard and profile pages
 
 ### Changed
 - Updated project version to 1.0.3 in package.json
 - Improved transaction management flow with detail view before edit/delete actions
 - Enhanced edit transaction page to hide category field when transaction type is income
+- Updated UI components with consistent styling and improved responsiveness
+- Modernized header designs across all pages with glassmorphism effects
 
 ### Fixed
 - UI consistency issues with button styling across different pages

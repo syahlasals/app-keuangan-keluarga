@@ -169,7 +169,8 @@
 - [x] Create profile page layout
 - [x] Display user information
 - [x] Implement logout functionality
-- [ ] Add account management options
+- [x] Add profile editing functionality
+- [x] Add balance hiding feature with eye icon toggle
 
 ### 9.2 Settings
 - [ ] Create settings page (if needed)
@@ -183,6 +184,7 @@
 - [x] Add consistent spacing and typography
 - [ ] Create loading skeletons
 - [x] Add smooth transitions and animations
+- [x] Implement modern glassmorphism design across all pages
 
 ### 10.2 Responsive Design
 - [x] Test and fix mobile responsiveness
