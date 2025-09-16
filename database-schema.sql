@@ -8,6 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS public.users (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
+    nama TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -107,9 +108,8 @@ CREATE POLICY "Users can delete own transactions" ON public.transactions
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.users (id, email)
-    VALUES (NEW.id, NEW.email);
-    
+    INSERT INTO public.users (id, email, nama)
+    VALUES (NEW.id, NEW.email, split_part(NEW.email, '@', 1));
     -- Insert default categories for new user
     INSERT INTO public.categories (user_id, nama)
     VALUES 
@@ -117,10 +117,11 @@ BEGIN
         (NEW.id, 'Transportasi'),
         (NEW.id, 'Pendidikan'),
         (NEW.id, 'Hiburan');
-    
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Update data lama agar kolom nama tidak NULL (opsional, jalankan manual jika perlu)
+-- UPDATE public.users SET nama = split_part(email, '@', 1) WHERE nama IS NULL;
 
 -- Trigger to automatically create user profile and default categories
 CREATE TRIGGER on_auth_user_created

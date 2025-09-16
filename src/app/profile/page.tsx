@@ -8,13 +8,14 @@ import { useTransactionStore } from '@/stores/transactionStore';
 import { Card, CardHeader, CardTitle, CardContent, Button } from '@/components/ui';
 import SyncStatus from '@/components/SyncStatus';
 import { formatCurrency } from '@/utils/helpers';
-import { LogOut, User, Wallet, BarChart3, Settings, HelpCircle, Tag, Smartphone } from 'lucide-react';
+import { LogOut, User, Wallet, BarChart3, Settings, HelpCircle, Tag, Smartphone, Eye, EyeOff, Edit3 } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, signOut, initialized } = useAuthStore();
   const { transactions, getCurrentBalance } = useTransactionStore();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
   const handleSignOut = async () => {
     if (window.confirm('Apakah Anda yakin ingin keluar?')) {
@@ -24,10 +25,20 @@ export default function ProfilePage() {
     }
   };
 
+  const toggleBalanceVisibility = () => {
+    setIsBalanceHidden(!isBalanceHidden);
+  };
+
   const currentBalance = getCurrentBalance();
   const totalTransactions = transactions.length;
   const incomeTransactions = transactions.filter(t => t.tipe === 'pemasukan').length;
   const expenseTransactions = transactions.filter(t => t.tipe === 'pengeluaran').length;
+
+  // Function to format hidden balance
+  const formatHiddenBalance = (amount: number) => {
+    // Convert to string and replace each digit with a dot
+    return '•'.repeat(Math.max(4, amount.toString().length));
+  };
 
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
@@ -51,7 +62,7 @@ export default function ProfilePage() {
 
       <div className="px-4 py-6">
         {/* Balance Summary */}
-        <Card className="mb-6 bg-gradient-to-r from-accent-100/90 to-background-hint-100/90 border-none shadow-glass-xl glass-card glass-card-hover">
+        <Card className="mb-6 bg-[#67C090] bg-[linear-gradient(40deg,rgba(129,222,172,1)_0%,rgba(221,244,231,1)_35%,rgba(103,192,144,1)_100%)] border-none shadow-glass-xl glass-card glass-card-hover">
           <CardHeader>
             <CardTitle className="flex items-center text-text-900">
               <Wallet className="h-5 w-5 mr-2 text-accent-500" />
@@ -59,12 +70,21 @@ export default function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-text-900 mb-4">
-              {formatCurrency(currentBalance)}
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-4xl font-bold text-text-900">
+                {isBalanceHidden ? formatHiddenBalance(currentBalance) : formatCurrency(currentBalance)}
+              </div>
+              <button
+                onClick={toggleBalanceVisibility}
+                className="ml-2 p-2 rounded-full bg-white/30 hover:bg-white/40 transition-colors"
+                aria-label={isBalanceHidden ? "Tampilkan saldo" : "Sembunyikan saldo"}
+              >
+                {isBalanceHidden ? <EyeOff className="h-5 w-5 text-text-900" /> : <Eye className="h-5 w-5 text-text-900" />}
+              </button>
             </div>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="text-center">
-                <p className="text-text-600">Total Transaksi</p>
+                <p className="text-text-600 whitespace-nowrap">Total Transaksi</p>
                 <p className="font-semibold text-text-900">{totalTransactions}</p>
               </div>
               <div className="text-center">
@@ -81,6 +101,28 @@ export default function ProfilePage() {
 
         {/* Menu Items */}
         <div className="space-y-3">
+          {/* Profile Header Card (gaya Menu Items) */}
+          <Card className="card-hover glass-card glass-card-hover">
+            <CardContent className="p-0">
+              <Link href="/profile/edit" className="block">
+                <div className="w-full p-4 flex items-center justify-between text-left hover:bg-white/70 transition-colors duration-300 rounded-xl backdrop-blur-md shadow-glass">
+                  <div className="flex items-center">
+                    <User className="h-5 w-5 text-text-400 mr-3" />
+                    <div>
+                      {/* <p className="font-medium text-text-900">{user?.nama || user?.email?.split('@')[0] || 'User'}</p>
+                      <p className="text-sm text-text-500">{user?.email}</p> */}
+                      <p className="font-medium text-text-900">Edit Profil</p>
+                      <p className="text-sm text-text-500">{user?.email} ({user?.nama || user?.email?.split('@')[0] || 'User'})</p>
+                    </div>
+                  </div>
+                  <div className="text-text-400">
+                    <span className="text-sm">→</span>
+                  </div>
+                </div>
+              </Link>
+            </CardContent>
+          </Card>
+
           {/* Categories Management */}
           <Card className="card-hover glass-card glass-card-hover">
             <CardContent className="p-0">

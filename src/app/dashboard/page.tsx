@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { useDataRefresh } from '@/hooks/useDataRefresh';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/utils/helpers';
-import { TrendingUp, TrendingDown, Wallet, Plus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, Plus, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import MonthlyChart from '@/components/MonthlyChart';
 
@@ -25,6 +25,8 @@ export default function DashboardPage() {
     fetchCategories,
     ensureCategoriesLoaded
   } = useCategoryStore();
+
+  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
   // Auto-refresh data when page becomes visible
   useDataRefresh();
@@ -53,9 +55,19 @@ export default function DashboardPage() {
     };
   }, [user, initialized, categories.length, fetchCategories]);
 
+  const toggleBalanceVisibility = () => {
+    setIsBalanceHidden(!isBalanceHidden);
+  };
+
   const monthlyStats = getMonthlyStats();
   const currentBalance = getCurrentBalance();
   const chartData = getDailyData();
+
+  // Function to format hidden balance
+  const formatHiddenBalance = (amount: number) => {
+    // Convert to string and replace each digit with a dot
+    return '•'.repeat(Math.max(4, amount.toString().length));
+  };
 
   const recentTransactions = transactions.slice(0, 5);
 
@@ -94,7 +106,7 @@ export default function DashboardPage() {
 
       <div className="px-4 -mt-4">
         {/* Balance Card */}
-        <Card className="mb-6 bg-gradient-to-r from-accent-100/90 to-background-hint-100/90 border-none shadow-glass-xl glass-card glass-card-hover">
+        <Card className="mb-6 bg-[#67C090] bg-[linear-gradient(40deg,rgba(129,222,172,1)_0%,rgba(221,244,231,1)_35%,rgba(103,192,144,1)_100%)] border-none shadow-glass-xl glass-card glass-card-hover">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg text-text-900 flex items-center">
               <Wallet className="h-5 w-5 mr-2 text-accent-500" />
@@ -102,8 +114,17 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-text-900 mb-2">
-              {formatCurrency(currentBalance)}
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-4xl font-bold text-text-900">
+                {isBalanceHidden ? formatHiddenBalance(currentBalance) : formatCurrency(currentBalance)}
+              </div>
+              <button
+                onClick={toggleBalanceVisibility}
+                className="ml-2 p-2 rounded-full bg-white/30 hover:bg-white/40 transition-colors"
+                aria-label={isBalanceHidden ? "Tampilkan saldo" : "Sembunyikan saldo"}
+              >
+                {isBalanceHidden ? <EyeOff className="h-5 w-5 text-text-900" /> : <Eye className="h-5 w-5 text-text-900" />}
+              </button>
             </div>
             <p className="text-sm text-text-600">
               Total {transactions.length} transaksi
