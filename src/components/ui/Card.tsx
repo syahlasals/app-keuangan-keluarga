@@ -4,6 +4,7 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  variant?: 'default' | 'bank';
 }
 
 interface CardHeaderProps {
@@ -53,7 +54,7 @@ export function CardTitle({ children, className = '' }: CardTitleProps) {
 
 export function CardContent({ children, className = '' }: CardContentProps) {
   return (
-    <div className={`px-6 py-5 ${className}`}>
+    <div className={`px-6 py-6 ${className}`}>
       {children}
     </div>
   );

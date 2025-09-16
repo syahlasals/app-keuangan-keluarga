@@ -40,10 +40,8 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       let query = supabase
         .from('transactions')
-        .select(`
-          *,
-          category:categories(*)
-        `)
+        // Selecting only from transactions to reduce payload and latency
+        .select('*')
         .eq('user_id', user.id)
         .order('tanggal', { ascending: false })
         .order('created_at', { ascending: false })
@@ -84,10 +82,8 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
             status: 'success' as const,
           } as any,
         ])
-        .select(`
-          *,
-          category:categories(*)
-        `)
+        // Avoid join to speed up insert+return
+        .select('*')
         .single();
 
       if (error) {
@@ -101,8 +97,8 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         transactions: [data, ...state.transactions],
       });
 
-      // Background refresh to ensure synchronization
-      setTimeout(() => get().fetchTransactions(true), 100);
+  // Note: avoid immediate background refresh to reduce extra network calls and keep UI snappy.
+  // The list page will fetch fresh data on mount/visibility.
 
       return {};
     } catch (error) {
@@ -119,10 +115,8 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         .from('transactions')
         .update(updateData as any)
         .eq('id', id)
-        .select(`
-          *,
-          category:categories(*)
-        `)
+        // Avoid join to reduce latency
+        .select('*')
         .single();
 
       if (error) {
@@ -138,8 +132,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       set({ transactions: updatedTransactions });
 
-      // Background refresh to ensure synchronization
-      setTimeout(() => get().fetchTransactions(true), 100);
+  // Avoid immediate background refresh; local state is updated and list page fetches as needed.
 
       return {};
     } catch (error) {
@@ -168,8 +161,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       set({ transactions: filteredTransactions });
 
-      // Background refresh to ensure synchronization
-      setTimeout(() => get().fetchTransactions(true), 100);
+  // Avoid immediate background refresh to reduce redundant network calls.
 
       return {};
     } catch (error) {
@@ -183,7 +175,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   // Helper methods
   getCurrentBalance: () => {
     const { transactions } = get();
-    return transactions.reduce((balance, transaction) => {
+    const computed = transactions.reduce((balance, transaction) => {
       if (transaction.status !== 'success') return balance;
 
       if (transaction.tipe === 'pemasukan') {
@@ -192,6 +184,9 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         return balance - transaction.nominal;
       }
     }, 0);
+
+    // Ensure saldo minimum displayed is 0
+    return Math.max(0, computed);
   },
 
   getMonthlyStats: (date = new Date()) => {

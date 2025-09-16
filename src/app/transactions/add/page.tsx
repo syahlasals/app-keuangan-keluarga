@@ -35,6 +35,11 @@ export default function AddTransactionPage() {
     }
   }, [user, initialized, fetchCategories]);
 
+  // Prefetch transactions page for faster redirect after submit
+  useEffect(() => {
+    router.prefetch?.('/transactions');
+  }, [router]);
+
   const categoryOptions = [
     { value: '', label: 'Pilih Kategori (Opsional)' },
     ...categories.map(cat => ({ value: cat.id, label: cat.nama })),
