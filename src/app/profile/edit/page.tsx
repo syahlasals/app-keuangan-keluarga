@@ -95,7 +95,7 @@ export default function EditProfilePage() {
         <div className="safe-top px-4 py-4">
           <div className="flex items-center">
             <Link
-              href="/profile"
+              href="/others"
               className="mr-4"
             >
               <button className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass">

@@ -128,7 +128,7 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-background-500 pb-20 md:pb-8">
       {/* Header */}
-      <div className="bg-white/90 border-b shadow-glass backdrop-blur-md rounded-b-3xl">
+      <div className="bg-white/90 border-b sticky top-0 z-40 shadow-glass backdrop-blur-md rounded-b-3xl">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">

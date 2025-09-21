@@ -74,7 +74,14 @@ Aplikasi ini bertujuan untuk membantu keluarga mencatat pemasukan dan pengeluara
 * Grafik sederhana (line/bar chart) pemasukan vs pengeluaran bulan berjalan. Menampilkan pemasukan/pengeluaran harian dalam 1 bulan (sumbu X = tanggal).
 * Fitur privasi saldo dengan tombol toggle mata untuk menyembunyikan/menampilkan nominal saldo.
 
-### 3.7 UI/UX
+### 3.7 Statistik Keuangan
+
+* Laporan bulanan dengan perbandingan pertumbuhan bulan ke bulan.
+* Analisis berdasarkan kategori pengeluaran.
+* Visualisasi data dalam bentuk grafik.
+* Ringkasan statistik keuangan bulanan.
+
+### 3.8 UI/UX
 
 * Mobile-first, responsif untuk laptop/desktop.
 * Bottom navigation: Dashboard / Transaksi / Profil (logout).
@@ -157,6 +164,7 @@ Backend as a Service (BaaS): Supabase.
 6. **Lihat detail transaksi** → klik pada transaksi untuk melihat detail lengkap sebelum mengedit atau menghapus.
 7. **Edit profil** → akses dari halaman profil untuk mengubah nama pengguna.
 8. **Logout** dari menu profil.
+9. **Statistik Keuangan** → akses dari halaman profil untuk melihat laporan dan analisis keuangan.
 
 ---
 
@@ -165,7 +173,6 @@ Backend as a Service (BaaS): Supabase.
 * Fase 2:
 
   * Ekspor laporan (CSV/PDF).
-  * Perbandingan growth antar bulan.
   * Multi-akun dalam 1 keluarga.
   * Role admin/member.
   * Soft delete (riwayat penghapusan).
