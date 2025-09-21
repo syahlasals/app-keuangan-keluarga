@@ -10,9 +10,9 @@ import SyncStatus from '@/components/SyncStatus';
 import { formatCurrency } from '@/utils/helpers';
 import { LogOut, User, Wallet, Menu, Settings, HelpCircle, Tag, Smartphone, Eye, EyeOff, Edit3, BarChart3 } from 'lucide-react';
 
-export default function ProfilePage() {
+export default function OthersPage() {
   const router = useRouter();
-  const { user, signOut } = useAuthStore();
+  const { user, signOut, initialized } = useAuthStore();
   const { transactions, getCurrentBalance } = useTransactionStore();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
@@ -48,11 +48,11 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="bg-white/20 p-3 rounded-full mr-4 backdrop-blur-md shadow-glass">
-                <Menu className="h-6 w-6" />
+                <Settings className="h-6 w-6" />
               </div>
               <div>
                 <h1 className="text-xl font-semibold">Lainnya</h1>
-                <p className="text-primary-100 text-sm">Akses fitur tambahan & pengaturan</p>
+                <p className="text-primary-100 text-sm">Akses untuk fitur lainnya & pengaturan</p>
               </div>
             </div>
             <SyncStatus size="md" />
@@ -77,14 +77,14 @@ export default function ProfilePage() {
               <button
                 onClick={toggleBalanceVisibility}
                 className="ml-2 p-2 rounded-full bg-white/30 hover:bg-white/40 transition-colors"
-                aria-label={isBalanceHidden ? "Tampilkan saldo" : "Sembunyikan saldo"}
+                aria-label={isBalanceHidden ? "Show balance" : "Hide balance"}
               >
                 {isBalanceHidden ? <EyeOff className="h-5 w-5 text-text-900" /> : <Eye className="h-5 w-5 text-text-900" />}
               </button>
             </div>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="text-center">
-                <p className="text-text-600 whitespace-nowrap">Total Transaksi</p>
+                <p className="text-text-600 whitespace-nowrap">Total</p>
                 <p className="font-semibold text-text-900">{totalTransactions}</p>
               </div>
               <div className="text-center">
@@ -109,8 +109,10 @@ export default function ProfilePage() {
                   <div className="flex items-center">
                     <User className="h-5 w-5 text-text-400 mr-3" />
                     <div>
-                      <p className="font-medium text-text-900">{user?.nama || user?.email?.split('@')[0] || 'User'}</p>
-                      <p className="text-sm text-text-500">{user?.email}</p>
+                      {/* <p className="font-medium text-text-900">{user?.nama || user?.email?.split('@')[0] || 'User'}</p>
+                      <p className="text-sm text-text-500">{user?.email}</p> */}
+                      <p className="font-medium text-text-900">Edit Profil Anda</p>
+                      <p className="text-sm text-text-500">{user?.email} ({user?.nama || user?.email?.split('@')[0] || 'User'})</p>
                     </div>
                   </div>
                   <div className="text-text-400">
@@ -190,7 +192,7 @@ export default function ProfilePage() {
             <CardContent className="p-0">
               <button className="w-full p-4 flex items-center justify-between text-left hover:bg-white/70 transition-colors duration-300 rounded-xl backdrop-blur-md shadow-glass">
                 <div className="flex items-center">
-                  <Tag className="h-5 w-5 text-text-400 mr-3" />
+                  <Settings className="h-5 w-5 text-text-400 mr-3" />
                   <div>
                     <p className="font-medium text-text-900">Pengaturan</p>
                     <p className="text-sm text-text-500">Kelola preferensi aplikasi</p>

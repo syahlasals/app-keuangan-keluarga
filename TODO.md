@@ -256,7 +256,7 @@
 
 ### Phase 2 Features (Future)
 - [ ] Export reports (CSV/PDF)
-- [ ] Month-to-month growth comparison
+- [x] Month-to-month growth comparison
 - [ ] Multi-account family support
 - [ ] Admin/member roles
 - [ ] Soft delete with history

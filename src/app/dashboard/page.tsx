@@ -92,7 +92,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-semibold">Selamat Datang!</h1>
-              <p className="text-primary-100 text-sm">{user?.email}</p>
+              <p className="text-primary-100 text-sm">{user?.nama || user?.email}</p>
             </div>
             <Link
               href="/transactions/add"

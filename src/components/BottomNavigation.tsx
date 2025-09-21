@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, CreditCard, Settings, User } from 'lucide-react';
+import { Home, CreditCard, Settings, Tag } from 'lucide-react';
 
 interface NavItem {
   href: string;
@@ -26,15 +26,15 @@ const navItems: NavItem[] = [
   },
   {
     href: '/categories',
-    icon: Settings,
+    icon: Tag,
     label: 'Kategori',
     activePatterns: ['/categories'],
   },
   {
-    href: '/profile',
-    icon: User,
-    label: 'Profil',
-    activePatterns: ['/profile'],
+    href: '/others',
+    icon: Settings,
+    label: 'Lainnya',
+    activePatterns: ['/others'],
   },
 ];
 

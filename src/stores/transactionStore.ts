@@ -79,31 +79,23 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
           {
             ...transactionData,
             user_id: user.id,
-            status: 'success' as const,
+            status: 'success',
           } as any,
         ])
-        // Avoid join to speed up insert+return
         .select('*')
         .single();
 
-      if (error) {
-        console.error('Error creating transaction:', error);
-        return handleDatabaseError(error);
+      if (error || !data) {
+        return { error: error?.message || 'Gagal menambah transaksi' };
       }
 
-      // Add to local state
-      const state = get();
-      set({
+      // Add to state only if insert succeeded
+      set((state) => ({
         transactions: [data, ...state.transactions],
-      });
-
-  // Note: avoid immediate background refresh to reduce extra network calls and keep UI snappy.
-  // The list page will fetch fresh data on mount/visibility.
-
+      }));
       return {};
-    } catch (error) {
-      console.error('Error creating transaction:', error);
-      return handleDatabaseError(error);
+    } catch (error: any) {
+      return { error: error?.message || 'Gagal menambah transaksi' };
     }
   },
 

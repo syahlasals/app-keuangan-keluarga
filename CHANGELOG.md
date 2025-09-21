@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-09-16
+
+### Added
+- Financial Statistics & Reporting feature with comprehensive financial analysis
+- Month-to-month growth comparison for income, expenses, and balance
+- Category-based expense analysis with percentage breakdowns
+- Interactive monthly charts with bar graph visualization
+- Navigation between months for historical analysis
+- Summary statistics for selected month
+- Link to statistics page in user profile menu
+
+### Changed
+- Updated project version to 1.0.4 in package.json
+- Enhanced PRD.md to include statistics feature requirements
+- Updated TODO.md to mark statistics feature as completed
+- Updated IMPLEMENTATION_PROGRESS.md to reflect completed feature
+
 ## [1.0.3] - 2025-09-15
 
 ### Added

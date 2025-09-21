@@ -81,20 +81,18 @@ export default function AddTransactionPage() {
     const transactionData: TransactionCreateInput = {
       tipe: formData.tipe,
       nominal: parseFormattedNumber(formData.nominal),
-      // Only include category for expenses (but it's optional now)
       kategori_id: formData.tipe === 'pengeluaran' ? (formData.kategori_id || null) : null,
       tanggal: formData.tanggal,
       catatan: formData.catatan.trim() || null,
     };
 
-    const result = await createTransaction(transactionData);
-
-    if (result.error) {
-      setErrors({ submit: result.error });
-      setIsSubmitting(false);
-    } else {
-      router.push('/transactions');
-    }
+    // Optimistic UI: langsung redirect, biarkan sync di background
+    createTransaction(transactionData).then((result) => {
+      if (result.error) {
+        setErrors({ submit: result.error });
+      }
+    });
+    router.push('/transactions');
   };
 
   if (initialized && !user) {
@@ -175,6 +173,13 @@ export default function AddTransactionPage() {
                       <label className="block text-sm font-medium text-text-700">
                         Kategori (Opsional)
                       </label>
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => setShowAddCategory(!showAddCategory)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
 
                     <Select
@@ -195,10 +200,20 @@ export default function AddTransactionPage() {
                         <Button
                           type="button"
                           size="sm"
-                          onClick={() => {
-                            // TODO: Implement add category
-                            setShowAddCategory(false);
-                            setNewCategoryName('');
+                          onClick={async () => {
+                            if (newCategoryName.trim()) {
+                              const { createCategory } = useCategoryStore.getState();
+                              const result = await createCategory(newCategoryName.trim());
+                              if (!result.error) {
+                                // Refresh categories to include the new one
+                                await fetchCategories();
+                                // Reset form
+                                setNewCategoryName('');
+                                setShowAddCategory(false);
+                              } else {
+                                setErrors({ submit: result.error });
+                              }
+                            }
                           }}
                         >
                           Tambah
