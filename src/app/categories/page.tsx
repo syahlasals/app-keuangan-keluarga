@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { useDataRefresh } from '@/hooks/useDataRefresh';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Modal, AlertModal } from '@/components/ui';
 import { Plus, Edit2, Trash2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CategoriesPage() {
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; nama: string } | null>(null);
   const { user, initialized } = useAuthStore();
   const {
     categories,
@@ -30,6 +31,8 @@ export default function CategoriesPage() {
   const [editCategoryName, setEditCategoryName] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (user && initialized) {
@@ -70,11 +73,17 @@ export default function CategoriesPage() {
 
     if (result.error) {
       setError(result.error);
+      setIsSubmitting(false);
     } else {
       setNewCategoryName('');
       setShowAddForm(false);
+      setSuccessMessage('Kategori berhasil ditambahkan.');
+      setShowSuccessModal(true);
+      setIsSubmitting(false);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+      }, 1200);
     }
-    setIsSubmitting(false);
   };
 
   const handleEditCategory = async (e: React.FormEvent) => {
@@ -93,23 +102,32 @@ export default function CategoriesPage() {
 
     if (result.error) {
       setError(result.error);
+      setIsSubmitting(false);
     } else {
       setEditingCategory(null);
       setEditCategoryName('');
+      setSuccessMessage('Kategori berhasil diubah.');
+      setShowSuccessModal(true);
+      setIsSubmitting(false);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+      }, 1200);
     }
-    setIsSubmitting(false);
   };
 
-  const handleDeleteCategory = async (id: string, nama: string) => {
-    if (window.confirm(`Apakah Anda yakin ingin menghapus kategori "${nama}"? Semua transaksi dengan kategori ini akan dipindahkan ke "Tanpa Kategori".`)) {
-      setIsSubmitting(true);
-      const result = await deleteCategory(id);
+  const handleDeleteCategory = (id: string, nama: string) => {
+    setConfirmDelete({ id, nama });
+  };
 
-      if (result.error) {
-        setError(result.error);
-      }
-      setIsSubmitting(false);
+  const confirmDeleteCategory = async () => {
+    if (!confirmDelete) return;
+    setIsSubmitting(true);
+    const result = await deleteCategory(confirmDelete.id);
+    if (result.error) {
+      setError(result.error);
     }
+    setIsSubmitting(false);
+    setConfirmDelete(null);
   };
 
   const startEdit = (category: { id: string; nama: string }) => {
@@ -132,7 +150,7 @@ export default function CategoriesPage() {
         <div className="safe-top px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Link href="/profile" className="mr-4">
+              <Link href="/others" className="mr-4">
                 <button className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass">
                   <ArrowLeft className="h-4 w-4" />
                 </button>
@@ -303,6 +321,34 @@ export default function CategoriesPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Modal Konfirmasi Hapus Kategori */}
+      <Modal isOpen={!!confirmDelete} onClose={() => setConfirmDelete(null)} title="Konfirmasi Hapus Kategori" size="sm">
+        <div className="text-center p-2">
+          <div className="mb-3 text-danger-600 font-semibold text-lg">Hapus Kategori?</div>
+          <div className="mb-4 text-text-700">
+            Apakah Anda yakin ingin menghapus kategori <span className="font-bold">&quot;{confirmDelete?.nama}&quot;</span>?
+            <br />
+            Semua transaksi dengan kategori ini akan dipindahkan ke <b>&quot;Tanpa Kategori&quot;</b>.
+          </div>
+          <div className="flex justify-center gap-3 mt-4">
+            <Button variant="outline" onClick={() => setConfirmDelete(null)} disabled={isSubmitting}>
+              Batal
+            </Button>
+            <Button variant="danger" onClick={confirmDeleteCategory} loading={isSubmitting}>
+              Hapus
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Sukses Tambah Kategori */}
+      <AlertModal
+        open={showSuccessModal}
+        type="success"
+        title="Berhasil"
+        message={successMessage}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </div>
   );
 }

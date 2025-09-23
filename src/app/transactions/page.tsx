@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
+import { fetchAllTransactions } from '@/stores/fetchAllTransactions';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { Button, Card, Input } from '@/components/ui';
 import TransactionStatus from '@/components/TransactionStatus';
@@ -40,6 +41,32 @@ export default function TransactionsPage() {
   // Auto-refresh data when page becomes visible
   useDataRefresh();
 
+  // State for accurate balance
+  const [accurateBalance, setAccurateBalance] = useState<number | null>(null);
+  const [loadingBalance, setLoadingBalance] = useState(false);
+
+  // Fetch all transactions and calculate accurate balance
+  const calculateAccurateBalance = useCallback(async () => {
+    setLoadingBalance(true);
+    const all = await fetchAllTransactions();
+    const total = all.reduce((balance, transaction) => {
+      if (transaction.status !== 'success') return balance;
+      if (transaction.tipe === 'pemasukan') {
+        return balance + transaction.nominal;
+      } else {
+        return balance - transaction.nominal;
+      }
+    }, 0);
+    setAccurateBalance(Math.max(0, total));
+    setLoadingBalance(false);
+  }, []);
+
+  useEffect(() => {
+    if (user && initialized) {
+      calculateAccurateBalance();
+    }
+  }, [user, initialized, calculateAccurateBalance]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -61,7 +88,7 @@ export default function TransactionsPage() {
   useEffect(() => {
     if (user && initialized) {
       fetchCategories();
-      fetchTransactions(true);
+      fetchTransactions();
     }
   }, [user, initialized, fetchCategories, fetchTransactions]);
 
@@ -112,7 +139,7 @@ export default function TransactionsPage() {
 
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 1000) {
-        fetchTransactions(false);
+        fetchTransactions();
       }
     };
 
