@@ -53,10 +53,12 @@ export default function EditTransactionPage() {
     }
   }, [user, initialized, transactionId, transactions, fetchCategories, router]);
 
-  // Prefetch transactions page for faster redirect after submit
+  // Prefetch transaction detail view for faster redirect after submit/cancel
   useEffect(() => {
-    router.prefetch?.('/transactions');
-  }, [router]);
+    if (transactionId) {
+      router.prefetch?.(`/transactions?view=${transactionId}`);
+    }
+  }, [router, transactionId]);
 
   const categoryOptions = [
     { value: '', label: 'Pilih Kategori' },
@@ -108,7 +110,7 @@ export default function EditTransactionPage() {
       setErrors({ submit: result.error });
       setIsSubmitting(false);
     } else {
-      router.push('/transactions');
+      router.push(`/transactions?view=${transactionId}`, { scroll: false });
     }
   };
 
@@ -118,11 +120,13 @@ export default function EditTransactionPage() {
       <div className="bg-white/90 border-b backdrop-blur-md shadow-glass rounded-b-3xl">
         <div className="safe-top px-4 py-4">
           <div className="flex items-center">
-            <Link href="/transactions" className="mr-4">
-              <button className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass">
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-            </Link>
+            <button
+              className="p-2 text-text-400 hover:text-primary-500 hover:bg-white/70 transition-colors duration-300 rounded-xl disabled:opacity-50 backdrop-blur-md shadow-glass mr-4"
+              type="button"
+              onClick={() => router.push(`/transactions?view=${transactionId}`, { scroll: false })}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
             <h1 className="text-xl font-semibold text-text-900">Edit Transaksi</h1>
           </div>
         </div>
@@ -218,11 +222,14 @@ export default function EditTransactionPage() {
           </Card>
 
           <div className="flex space-x-3">
-            <Link href="/transactions" className="flex-1">
-              <Button variant="outline" className="w-full">
-                Batal
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="flex-1 w-full"
+              type="button"
+              onClick={() => router.push(`/transactions?view=${transactionId}`, { scroll: false })}
+            >
+              Batal
+            </Button>
             <Button
               type="submit"
               disabled={isSubmitting}

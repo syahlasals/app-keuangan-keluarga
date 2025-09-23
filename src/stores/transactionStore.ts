@@ -10,7 +10,8 @@ interface TransactionState {
   currentPage: number;
 
   // Actions
-  fetchTransactions: (reset?: boolean) => Promise<void>;
+  fetchTransactions: () => Promise<void>;
+  // fetchTransactions: (reset?: boolean) => Promise<void>;
   createTransaction: (transaction: TransactionCreateInput) => Promise<{ error?: string }>;
   updateTransaction: (transaction: TransactionUpdateInput) => Promise<{ error?: string }>;
   deleteTransaction: (id: string) => Promise<{ error?: string }>;
@@ -30,41 +31,26 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   hasMore: true,
   currentPage: 0,
 
-  fetchTransactions: async (reset = false) => {
+    // Fetch all transactions for accurate balance (no pagination)
+  fetchTransactions: async () => {
     const { user } = useAuthStore.getState();
     if (!user) return;
 
     try {
-      const state = get();
-      const page = reset ? 0 : state.currentPage;
-
-      let query = supabase
+      const { data, error } = await supabase
         .from('transactions')
         // Selecting only from transactions to reduce payload and latency
         .select('*')
         .eq('user_id', user.id)
         .order('tanggal', { ascending: false })
-        .order('created_at', { ascending: false })
-        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
-      const { data, error } = await query;
-
+        .order('created_at', { ascending: false });
       if (error) {
-        console.error('Error fetching transactions:', error);
+        console.error('Error fetching all transactions:', error);
         return;
       }
-
-      const newTransactions = data || [];
-      const hasMore = newTransactions.length === PAGE_SIZE;
-
-      set({
-        transactions: reset ? newTransactions : [...state.transactions, ...newTransactions],
-        hasMore,
-        currentPage: page + 1,
-      });
-
+      set({ transactions: data || [] });
     } catch (error) {
-      console.error('Error fetching transactions:', error);
+      console.error('Error fetching all transactions:', error);
     }
   },
 
