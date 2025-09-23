@@ -16,7 +16,7 @@ export const useDataRefresh = () => {
   const refreshData = useCallback(() => {
     if (user) {
       fetchCategories();
-      fetchTransactions(true);
+      fetchTransactions();
     }
   }, [user, fetchCategories, fetchTransactions]);
 

@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { Card, Button, Input, Select } from '@/components/ui';
+import AlertModal from '@/components/ui/AlertModal';
 import { getCurrentDate, parseFormattedNumber, formatNumber } from '@/utils/helpers';
 import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -28,6 +29,8 @@ export default function AddTransactionPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (user && initialized) {
@@ -71,13 +74,10 @@ export default function AddTransactionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
-
     setIsSubmitting(true);
-
     const transactionData: TransactionCreateInput = {
       tipe: formData.tipe,
       nominal: parseFormattedNumber(formData.nominal),
@@ -85,14 +85,18 @@ export default function AddTransactionPage() {
       tanggal: formData.tanggal,
       catatan: formData.catatan.trim() || null,
     };
-
-    // Optimistic UI: langsung redirect, biarkan sync di background
-    createTransaction(transactionData).then((result) => {
-      if (result.error) {
-        setErrors({ submit: result.error });
-      }
-    });
-    router.push('/transactions');
+    const result = await createTransaction(transactionData);
+    if (result.error) {
+      setErrors({ submit: result.error });
+      setIsSubmitting(false);
+    } else {
+      setSuccessMessage('Transaksi berhasil disimpan!');
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        router.push('/transactions');
+      }, 1200);
+    }
   };
 
   if (initialized && !user) {
@@ -266,6 +270,13 @@ export default function AddTransactionPage() {
           </div>
         </form>
       </div>
+      <AlertModal
+        open={showSuccessModal}
+        type="success"
+        title="Berhasil"
+        message={successMessage}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </div>
   );
 }

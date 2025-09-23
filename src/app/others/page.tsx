@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { Card, CardHeader, CardTitle, CardContent, Button } from '@/components/ui';
+import Modal from '@/components/ui/Modal';
 import SyncStatus from '@/components/SyncStatus';
 import { formatCurrency } from '@/utils/helpers';
 import { LogOut, User, Wallet, Menu, Settings, HelpCircle, Tag, Smartphone, Eye, EyeOff, Edit3, BarChart3 } from 'lucide-react';
@@ -16,13 +17,17 @@ export default function OthersPage() {
   const { transactions, getCurrentBalance } = useTransactionStore();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   const handleSignOut = async () => {
-    if (window.confirm('Apakah Anda yakin ingin keluar?')) {
-      setIsSigningOut(true);
-      await signOut();
-      router.replace('/auth/login');
-    }
+    setShowSignOutModal(true);
+  };
+
+  const confirmSignOut = async () => {
+    setShowSignOutModal(false);
+    setIsSigningOut(true);
+    await signOut();
+    router.replace('/auth/login');
   };
 
   const toggleBalanceVisibility = () => {
@@ -258,6 +263,22 @@ export default function OthersPage() {
             {isSigningOut ? 'Mengeluarkan...' : 'Keluar'}
           </Button>
         </div>
+        <Modal isOpen={showSignOutModal} onClose={() => setShowSignOutModal(false)} title="Konfirmasi Keluar" size="sm">
+          <div className="text-center p-2">
+            <div className="mb-3 text-danger-600 font-semibold text-lg">Keluar dari Akun?</div>
+            <div className="mb-4 text-text-700">
+              Apakah Anda yakin ingin keluar dari akun?
+            </div>
+            <div className="flex justify-center gap-3 mt-4">
+              <Button variant="outline" onClick={() => setShowSignOutModal(false)}>
+                Batal
+              </Button>
+              <Button variant="danger" onClick={confirmSignOut} loading={isSigningOut}>
+                Keluar
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );

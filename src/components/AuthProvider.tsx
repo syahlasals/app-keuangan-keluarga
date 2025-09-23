@@ -79,7 +79,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         try {
           await Promise.all([
             ensureCategoriesLoaded(user.id),
-            fetchTransactions(true)
+            fetchTransactions()
           ]);
         } catch (error) {
           console.warn('Data preload failed:', error);
