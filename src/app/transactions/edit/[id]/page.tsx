@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { Card, Button, Input, Select } from '@/components/ui';
+import AlertModal from '@/components/ui/AlertModal';
 import { formatNumber, parseFormattedNumber, formatDateForInput } from '@/utils/helpers';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -30,6 +31,8 @@ export default function EditTransactionPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (user && initialized) {
@@ -110,7 +113,12 @@ export default function EditTransactionPage() {
       setErrors({ submit: result.error });
       setIsSubmitting(false);
     } else {
-      router.push(`/transactions?view=${transactionId}`, { scroll: false });
+      setSuccessMessage('Transaksi berhasil diperbarui!');
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        router.push(`/transactions?view=${transactionId}`, { scroll: false });
+      }, 1200);
     }
   };
 
@@ -240,6 +248,13 @@ export default function EditTransactionPage() {
           </div>
         </form>
       </div>
+      <AlertModal
+        open={showSuccessModal}
+        type="success"
+        title="Berhasil"
+        message={successMessage}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </div>
   );
 }
