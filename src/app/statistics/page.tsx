@@ -34,7 +34,7 @@ export default function StatisticsPage() {
 
   useEffect(() => {
     if (user && initialized) {
-      fetchTransactions(true);
+      fetchTransactions();
       fetchCategories();
     }
   }, [user, initialized, fetchTransactions, fetchCategories]);
