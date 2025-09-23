@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { fetchAllTransactions } from '@/stores/fetchAllTransactions';
 import { useCategoryStore } from '@/stores/categoryStore';
-import { Button, Card, Input } from '@/components/ui';
+import { Button, Card, Input, Modal } from '@/components/ui';
 import TransactionStatus from '@/components/TransactionStatus';
 import SyncStatus from '@/components/SyncStatus';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -28,6 +28,7 @@ import type { FilterOptions, Transaction } from '@/types';
 
 export default function TransactionsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, initialized } = useAuthStore();
   const {
     transactions: allTransactions,
@@ -71,6 +72,7 @@ export default function TransactionsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; detail?: Transaction } | null>(null);
   const [filterForm, setFilterForm] = useState<FilterOptions>({
     kategori_id: '',
     startDate: '',
@@ -93,6 +95,23 @@ export default function TransactionsPage() {
   }, [user, initialized, fetchCategories, fetchTransactions]);
 
   // Apply local filtering when transactions or filters change
+  useEffect(() => {
+    const viewId = searchParams.get('view');
+    if (viewId && allTransactions.length > 0) {
+      const transactionToShow = allTransactions.find(t => t.id === viewId);
+      if (transactionToShow) {
+        setSelectedTransaction(transactionToShow);
+        setShowTransactionDetail(true);
+      } else {
+        // Jika ID di URL tidak valid, kembali ke daftar
+        router.push('/transactions');
+      }
+    } else {
+      setShowTransactionDetail(false);
+      setSelectedTransaction(null);
+    }
+  }, [searchParams, allTransactions, router]);
+
   useEffect(() => {
     let result = [...allTransactions];
 
@@ -135,7 +154,7 @@ export default function TransactionsPage() {
   // Handle infinite scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (loading || !hasMore) return;
+      if (loading || !hasMore || showTransactionDetail) return;
 
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 1000) {
@@ -145,10 +164,10 @@ export default function TransactionsPage() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading, hasMore, fetchTransactions]);
+  }, [loading, hasMore, fetchTransactions, showTransactionDetail]);
 
   const handleSearch = useCallback(() => {
-    setFilterForm(prev => ({ ...prev, search: searchQuery }));
+    setFilterForm((prev) => ({ ...prev, search: searchQuery }));
   }, [searchQuery]);
 
   const handleApplyFilters = () => {
@@ -167,8 +186,6 @@ export default function TransactionsPage() {
   };
 
   const handleDeleteTransaction = async (id: string) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
-
     setDeleteLoading(id);
     const result = await useTransactionStore.getState().deleteTransaction(id);
 
@@ -176,6 +193,17 @@ export default function TransactionsPage() {
       alert('Gagal menghapus transaksi: ' + result.error);
     }
     setDeleteLoading(null);
+  };
+
+  const openDeleteModal = (id: string, detail?: Transaction) => {
+    setConfirmDelete({ id, detail });
+  };
+
+  const confirmDeleteTransaction = async () => {
+    if (!confirmDelete) return;
+    await handleDeleteTransaction(confirmDelete.id);
+    setConfirmDelete(null);
+    closeTransactionDetail();
   };
 
   const scrollToTop = () => {
@@ -190,22 +218,20 @@ export default function TransactionsPage() {
 
     // For expenses, show category name if available, otherwise "Tanpa Kategori"
     if (!transaction.kategori_id) return 'Tanpa Kategori';
-    const category = categories.find(c => c.id === transaction.kategori_id);
+    const category = categories.find((c) => c.id === transaction.kategori_id);
     return category?.nama || 'Unknown';
   };
 
   const getActiveFiltersCount = () => {
-    return Object.values(filterForm).filter(value => value && value !== '').length;
+    return Object.values(filterForm).filter((value) => value && value !== '').length;
   };
 
   const handleViewTransaction = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setShowTransactionDetail(true);
+    router.push(`/transactions?view=${transaction.id}`, { scroll: false });
   };
 
   const closeTransactionDetail = () => {
-    setShowTransactionDetail(false);
-    setSelectedTransaction(null);
+    router.push('/transactions', { scroll: false });
   };
 
   const handleEditTransaction = () => {
@@ -403,12 +429,7 @@ export default function TransactionsPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    if (selectedTransaction && confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
-                      handleDeleteTransaction(selectedTransaction.id);
-                      closeTransactionDetail();
-                    }
-                  }}
+                  onClick={() => openDeleteModal(selectedTransaction.id, selectedTransaction)}
                   loading={deleteLoading === selectedTransaction.id}
                   className="flex-1 flex items-center justify-center rounded-xl text-danger-600 border-danger-200 hover:bg-danger-50/80"
                 >
@@ -418,7 +439,7 @@ export default function TransactionsPage() {
               </div>
             </div>
           </Card>
-        ) : filteredTransactions.length === 0 ? (
+        ) : filteredTransactions.length === 0 && !loading ? (
           /* Empty State */
           <Card className="p-8 text-center shadow-glass-xl glass-card glass-card-hover">
             <div className="text-text-400 mb-4">
@@ -484,7 +505,7 @@ export default function TransactionsPage() {
             ))}
 
             {/* Loading more indicator */}
-            {loading && filteredTransactions.length > 0 && (
+            {loading && (
               <div className="text-center py-4 text-text-500 text-sm">
                 Memuat lebih banyak...
               </div>
@@ -500,6 +521,32 @@ export default function TransactionsPage() {
         )}
       </div>
 
+      {/* Modal Konfirmasi Hapus Transaksi (tetap di luar) */}
+      <Modal isOpen={!!confirmDelete} onClose={() => setConfirmDelete(null)} title="Konfirmasi Hapus Transaksi" size="sm">
+          {/* ... (modal JSX remains the same) ... */}
+          <div className="text-center p-2">
+          <div className="mb-3 text-danger-600 font-semibold text-lg">Hapus Transaksi?</div>
+          <div className="mb-4 text-text-700">
+            Apakah Anda yakin ingin menghapus transaksi ini?
+            {confirmDelete?.detail && (
+              <div className="mt-2 text-sm text-text-600">
+                <div><b>{confirmDelete.detail.tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran'}</b> {formatCurrency(confirmDelete.detail.nominal)}</div>
+                <div>{getCategoryName(confirmDelete.detail)} &middot; {formatDate(confirmDelete.detail.tanggal)}</div>
+                {confirmDelete.detail.catatan && <div className="italic">{confirmDelete.detail.catatan}</div>}
+              </div>
+            )}
+          </div>
+          <div className="flex justify-center gap-3 mt-4">
+            <Button variant="outline" onClick={() => setConfirmDelete(null)} disabled={deleteLoading === confirmDelete?.id}>
+              Batal
+            </Button>
+            <Button variant="danger" onClick={confirmDeleteTransaction} loading={deleteLoading === confirmDelete?.id}>
+              Hapus
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      
       {/* Scroll to Top Button */}
       {showScrollTop && (
         <button
