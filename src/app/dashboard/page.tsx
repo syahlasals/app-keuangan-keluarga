@@ -94,12 +94,12 @@ export default function DashboardPage() {
               <h1 className="text-xl font-semibold">Selamat Datang!</h1>
               <p className="text-primary-100 text-sm">{user?.nama || user?.email}</p>
             </div>
-            <Link
+            {/* <Link
               href="/transactions/add"
               className="bg-white/20 p-3 rounded-xl hover:bg-white/30 transition-all duration-300 backdrop-blur-md shadow-glass"
             >
               <Plus className="h-6 w-6" />
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
