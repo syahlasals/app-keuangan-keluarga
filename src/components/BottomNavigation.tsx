@@ -51,7 +51,7 @@ export default function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 border-t border-white/40 safe-bottom md:hidden shadow-glass backdrop-blur-md rounded-t-3xl z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 border-t border-white/40 safe-bottom shadow-glass backdrop-blur-md rounded-t-3xl z-50">
       <div className="flex items-center justify-around py-3 relative">
         {/* Left nav */}
         <div className="flex flex-1 justify-evenly">
